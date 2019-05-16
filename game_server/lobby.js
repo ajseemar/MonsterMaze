@@ -1,3 +1,5 @@
+const Game = require('./game');
+
 class Lobby {
     constructor (size) {
         this.size = size;
@@ -7,6 +9,7 @@ class Lobby {
     addSocket (socket) {
         this.sockets[socket.id] = socket;
         const sockets = Object.values(this.sockets);
+        // if (sockets.length === this.size) this.game = new Game (sockets);
         if (sockets.length === this.size) sockets.forEach(socket => {
             socket.emit('lobbyFilled');
         });
@@ -16,3 +19,5 @@ class Lobby {
         delete this.sockets[socket.id];
     }
 }
+
+module.exports = Lobby;
