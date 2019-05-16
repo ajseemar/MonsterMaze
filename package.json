@@ -1,0 +1,28 @@
+{
+  "name": "monstermaze",
+  "version": "1.0.0",
+  "description": "Survive your way through a maze while fighting monster for your life",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "server": "nodemon app.js",
+    "webpack": "webpack --watch --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/camcarter131/MERN_stack_project.git"
+  },
+  "author": "Ajay Seemar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
