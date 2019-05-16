@@ -636,7 +636,7 @@ eval("\n\nvar alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ \"./node_modules/socket.io-client/lib/index.js\");\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);\n\n\nconst socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://localhost:3000');\n\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ \"./node_modules/socket.io-client/lib/index.js\");\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);\n\n\nconst socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://localhost:3000');\n\nsocket.on('lobbyFilled', () => {\n    \n});\n\nconst render = () => {\n    let time = Date.now();\n    let dt = (time - game.initialTime) / 1000.0;\n    \n    game.initialTime = time;\n    requestAnimationFrame(render);\n}\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ }),
 
