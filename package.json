@@ -1,0 +1,25 @@
+{
+  "name": "monstermaze",
+  "version": "1.0.1",
+  "description": "Players must find their way through randomly generated mazes while fighting monsters",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo 'hello world'",
+    "start": "webpack --watch --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajseemar/MonsterMaze.git"
+  },
+  "author": "Ajay Seemar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ajseemar/MonsterMaze/issues"
+  },
+  "homepage": "https://github.com/ajseemar/MonsterMaze#readme",
+  "dependencies": {
+    "uuid": "^3.3.2",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6"
+  }
+}
