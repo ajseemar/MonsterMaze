@@ -29,8 +29,10 @@ const assets = {
 var rm = new ResourceManager();
 
 document.addEventListener("DOMContentLoaded", () => {
+    // const canvas = document.getElementById('canvas');
+    // const ctx = canvas.getContext('2d');
     rm.load(assets);
-    const game = new Game(25, rm);
+    const game = new Game(20, rm);
     const start = () => {
         let time = Date.now();
         let dt = (time - game.initialTime) / 1000.0;
