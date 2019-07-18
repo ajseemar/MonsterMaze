@@ -1,10 +1,10 @@
 const index = require('../utils/utils');
 
 class Maze {
-    constructor(size, width, height, grid) {
-        this.cellCount = size;
-        this.width = width;
-        this.height = height;
+    constructor(cellCount, cellSize, width, height, grid) {
+        this.cellCount = cellCount;
+        this.width = cellSize.w * cellCount;
+        this.height = cellSize.h * cellCount;
         this.grid = grid;
 
         this.generateMaze();

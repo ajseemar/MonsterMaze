@@ -1,9 +1,11 @@
+const KEYS = require('./keys');
+
 class InputManager {
     constructor() {
         this.pressedKeys = {};
 
-        document.addEventListener('keydown', e => this.setKey(e, true));
-        document.addEventListener('keyup', e => this.setKey(e, false));
+        window.addEventListener('keydown', e => this.setKey(e, true));
+        window.addEventListener('keyup', e => this.setKey(e, false));
     }
 
     setKey(e, status) {

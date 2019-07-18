@@ -8,10 +8,10 @@ class Node {
 
         // fix to empty
         this.neighbors = {
-            "north": Infinity,
-            "east": Infinity,
-            "south": Infinity,
-            "west": Infinity
+            // "north": Infinity,
+            // "east": Infinity,
+            // "south": Infinity,
+            // "west": Infinity
         };
         this.size = size;
         this.radius = 2;

@@ -24,6 +24,8 @@ const assets = {
     'player_standing': 'assets/images/player_standing.png',
     'right_wall': 'assets/images/right_wall.png',
     'start_flag': 'assets/images/start_flag.png',
+    'zombie': 'assets/images/zombie.png',
+    'zombie_hit': 'assets/images/zombie_hit.png',
 };
 
 var rm = new ResourceManager();

@@ -2,16 +2,26 @@ const { heuristic } = require('../../utils/utils');
 const Path = require('./path');
 
 class A_Star {
-    constructor(grid) {
-        this.grid = grid;
-        this.cells = grid.cells;
-        this.start = this.cells[0];
-        this.end = this.cells[this.cells.length - 1];
-        console.log(this.start, this.end);
-
+    constructor(start, end, nodes) {
+        // this.cells = cells;
+        this.nodes = nodes;
+        this.start = start;
+        this.end = end;
+        // console.log(this.start, this.end);
+        // debugger
         this.openSet = [this.start];
         this.closedSet = [];
         this.path = new Path();
+        this.initialTime = Date.now();
+    }
+
+    updateSolver(start, end) {
+        this.start = start;
+        this.end = end;
+        this.openSet.push(this.start);
+        this.closedSet = [];
+        this.finished = false;
+        this.path.clear();
         this.initialTime = Date.now();
     }
 
@@ -43,7 +53,9 @@ class A_Star {
                 }
             }
             // add current to closed set 
-            const neighbors = current.neighbors.filter(obj => !Object.keys(current.walls)
+            // const neighbors = current.neighbors.filter(obj => !Object.keys(current.walls)
+            //     .includes(Object.keys(obj)[0]))
+            const neighbors = current.neighbors.filter(obj => Object.keys(current.node.neighbors)
                 .includes(Object.keys(obj)[0]))
                 .map(obj => Object.values(obj)[0]);
             neighbors.forEach(neighbor => {
@@ -73,7 +85,7 @@ class A_Star {
     }
 
     render(ctx) {
-        if (!this.finished) return;
+        // if (!this.finished) return;
         this.path.render(ctx);
     }
 }

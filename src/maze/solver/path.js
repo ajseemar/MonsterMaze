@@ -4,6 +4,10 @@ class Path {
         this.radius = 20;
     }
 
+    clear() {
+        this.nodes = [];
+    }
+
     addNode(node) {
         this.nodes.push(node);
     }
