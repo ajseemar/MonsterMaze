@@ -1,4 +1,6 @@
 const { heuristic } = require('../../utils/utils');
+const Vector = require('../../utils/vector');
+const Path = require('./path');
 
 class A_Star {
     constructor(grid) {
@@ -10,7 +12,7 @@ class A_Star {
 
         this.openSet = [this.start];
         this.closedSet = [];
-        this.path = [];
+        this.path = new Path();
         this.initialTime = Date.now();
     }
 
@@ -28,11 +30,17 @@ class A_Star {
             if (current === this.end) {
                 console.log(`${(Date.now() - this.initialTime) / 1000.0} seconds`)
                 let temp = current.node;
-                this.path.push(temp);
+                this.path.addPoint(new Vector(temp.position.x, temp.position.y));
                 while (temp.parent) {
-                    this.path.push(temp.parent);
+                    this.path.addPoint(new Vector(temp.parent.position.x, temp.parent.position.y));
+                    // this.path.push(temp.parent);
                     temp = temp.parent;
                 }
+                // this.path.push(temp);
+                // while (temp.parent) {
+                //     this.path.push(temp.parent);
+                //     temp = temp.parent;
+                // }
                 console.log('DONE');
                 this.finished = true;
                 this.openSet = [];
@@ -87,18 +95,19 @@ class A_Star {
         //     this.closedSet.forEach(cell => cell.render(ctx, '#f00', 0, 0));
         // }
         if (!this.finished) return;
-        this.path.forEach(node => {
-            // node.render();
-            ctx.strokeStyle = "#0f0";
-            ctx.beginPath();
-            if (node.parent)
-                ctx.moveTo(node.parent.position.x, node.parent.position.y);
-            else
-                ctx.moveTo(node.position.x, node.position.y);
-            ctx.lineTo(node.position.x, node.position.y);
-            ctx.closePath();
-            ctx.stroke();
-        });
+        // this.path.forEach(node => {
+        //     // node.render();
+        //     ctx.strokeStyle = "#0f0";
+        //     ctx.beginPath();
+        //     if (node.parent)
+        //         ctx.moveTo(node.parent.position.x, node.parent.position.y);
+        //     else
+        //         ctx.moveTo(node.position.x, node.position.y);
+        //     ctx.lineTo(node.position.x, node.position.y);
+        //     ctx.closePath();
+        //     ctx.stroke();
+        // });
+        this.path.render(ctx);
         // this.cells.forEach(cell => cell.node.render());
     }
 }
