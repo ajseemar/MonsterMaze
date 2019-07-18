@@ -1,0 +1,221 @@
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./src/game.js":
+/*!*********************!*\
+  !*** ./src/game.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Grid = __webpack_require__(/*! ./maze/grid */ \"./src/maze/grid.js\");\nconst Maze = __webpack_require__(/*! ./maze/maze */ \"./src/maze/maze.js\");\nconst A_Star = __webpack_require__(/*! ./maze/solver/a_star */ \"./src/maze/solver/a_star.js\");\n\nclass Game {\n    constructor(size, rm) {\n        this.canvas = document.getElementById('canvas');\n        this.ctx = this.canvas.getContext('2d');\n\n        this.cellCount = size;\n        // this.canvas.width = window.innerWidth;\n        // this.canvas.height = window.innerHeight;\n        window.addEventListener('resize', this.resize.bind(this), false);\n        window.addEventListener('orientationchange', this.resize.bind(this), false);\n        this.resize();\n\n        this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);\n        this.maze = new Maze(this.cellCount, this.width, this.height, this.grid);\n\n        this.solver = new A_Star(this.grid);\n\n        this.initialTime = Date.now();\n    }\n\n    resize() {\n        const ratio = 16 / 9;\n        this.canvas.width = window.innerWidth;\n        this.canvas.height = window.innerHeight;\n        // if (this.canvas.width > this.canvas.height / ratio) this.canvas.width = this.canvas.height * ratio;\n        // else if (this.canvas.height > this.canvas.width / ration) this.canvas.height = this.canvas.width * ratio;\n        this.width = this.canvas.width;\n        this.height = this.canvas.height;\n        this.cellSize = {\n            w: this.width / this.cellCount,\n            h: this.height / this.cellCount\n        };\n        if (this.grid) {\n            this.grid.cells.forEach(cell => {\n                cell.size = this.cellSize;\n                cell.resize();\n            });\n        }\n        // const widthToHeight = 4 / 3;\n        // let width = window.innerWidth - 5;\n        // let height = window.innerHeight - 5;\n        // this.canvas.width = width;\n        // this.canvas.height = height;\n        // const fwidthToHeight = width / height;\n\n        // const gameContent = document.getElementById('main-content');\n        // // debugger\n        // if (fwidthToHeight > widthToHeight) {\n        //     width = height * widthToHeight;\n        //     gameContent.style.height = height + 'px';\n        //     gameContent.style.width = width + 'px';\n        // } else {\n        //     height = width / widthToHeight;\n        //     gameContent.style.height = height + 'px';\n        //     gameContent.style.width = width + 'px';\n        // }\n\n        // gameContent.style.marginTop = (-height / 2) + 'px';\n        // gameContent.style.marginLeft = (-width / 2) + 'px';\n\n        // this.canvas.width = innerWidth;\n        // this.canvas.height = innerHeight;\n    }\n\n    update() {\n        this.solver.update();\n    }\n\n    render() {\n        this.ctx.clearRect(0, 0, this.width, this.height);\n        this.maze.render(this.ctx);\n        this.solver.render(this.ctx);\n        // console.log('rendering...');\n    }\n}\n\nmodule.exports = Game;\n\n//# sourceURL=webpack:///./src/game.js?");
+
+/***/ }),
+
+/***/ "./src/index.js":
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\");\nconst ResourceManager = __webpack_require__(/*! ./utils/resource_manager */ \"./src/utils/resource_manager.js\");\n\nconst assets = {\n    'baseball_bat': 'assets/images/baseball_bat.png',\n    'blue_foot': 'assets/images/blue_foot.png',\n    'blue_shoulder': 'assets/images/blue_shoulder.png',\n    'bottom_wall': 'assets/images/bottom_wall.png',\n    'bullet': 'assets/images/bullet.png',\n    'end_flag': 'assets/images/end_flag.png',\n    'green_foot': 'assets/images/green_foot.png',\n    'green_shoulder': 'assets/images/green_shoulder.png',\n    'helmet': 'assets/images/helmet.png',\n    'left_wall': 'assets/images/left_wall.png',\n    'limb': 'assets/images/limb.png',\n    'machine_gun': 'assets/images/machine_gun.png',\n    'metal_bat': 'assets/images/metal_bat.png',\n    'pistol_reload': 'assets/images/pistol_reload.png',\n    'pistol': 'assets/images/pistol.png',\n    'player_gun': 'assets/images/player_gun.png',\n    'player_hold': 'assets/images/player_hold.png',\n    'player_machine_gun_reload': 'assets/images/player_machine_gun_reload.png',\n    'player_machine_gun': 'assets/images/player_machine_gun.png',\n    'player_standing': 'assets/images/player_standing.png',\n    'right_wall': 'assets/images/right_wall.png',\n    'start_flag': 'assets/images/start_flag.png',\n};\n\nvar rm = new ResourceManager();\n\ndocument.addEventListener(\"DOMContentLoaded\", () => {\n    // const canvas = document.getElementById('canvas');\n    // const ctx = canvas.getContext('2d');\n    rm.load(assets);\n    const game = new Game(10, rm);\n    const start = () => {\n        let time = Date.now();\n        let dt = (time - game.initialTime) / 1000.0;\n        game.update(dt);\n        game.render();\n        game.initialTime = time;\n        requestAnimationFrame(start);\n    }\n    rm.onReady(start);\n});\n\n//# sourceURL=webpack:///./src/index.js?");
+
+/***/ }),
+
+/***/ "./src/maze/cell.js":
+/*!**************************!*\
+  !*** ./src/maze/cell.js ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Node = __webpack_require__(/*! ./solver/node */ \"./src/maze/solver/node.js\");\nconst Wall = __webpack_require__(/*! ./wall */ \"./src/maze/wall.js\");\nconst Vector = __webpack_require__(/*! ../utils/vector */ \"./src/utils/vector.js\");\n\nclass Cell {\n    constructor(row, col, size) {\n        this.row = row;\n        this.col = col;\n        this.size = size;\n        this.visited = false;\n        this.node = new Node(row, col, size);\n        this.neighbors = [];\n        this.walls = {\n            \"north\": new Wall(\n                new Vector(this.col * this.size.w, this.row * this.size.h),\n                new Vector((this.col * this.size.w) + this.size.w, this.row * this.size.h)\n            ),\n            \"east\": new Wall(\n                new Vector((this.col * this.size.w) + this.size.w, this.row * this.size.h),\n                new Vector((this.col * this.size.w) + this.size.w, (this.row * this.size.h) + this.size.h)\n            ),\n            \"south\": new Wall(\n                new Vector((this.col * this.size.w), (this.row * this.size.h) + this.size.h),\n                new Vector((this.col * this.size.w) + this.size.w, (this.row * this.size.h) + this.size.h)\n            ),\n            \"west\": new Wall(\n                new Vector(this.col * this.size.w, this.row * this.size.h),\n                new Vector(this.col * this.size.w, (this.row * this.size.h) + this.size.h)\n            )\n        };\n        // debugger\n    }\n\n    resize() {\n        Object.keys(this.walls).forEach(dir => {\n            switch (dir) {\n                case \"north\":\n                    this.walls[dir].p1.x = this.col * this.size.w;\n                    this.walls[dir].p1.y = this.row * this.size.h;\n                    this.walls[dir].p2.x = (this.col * this.size.w) + this.size.w\n                    this.walls[dir].p2.y = this.row * this.size.h;\n                    break;\n                case \"east\":\n                    this.walls[dir].p1.x = (this.col * this.size.w) + this.size.w;\n                    this.walls[dir].p1.y = this.row * this.size.h;\n                    this.walls[dir].p2.x = (this.col * this.size.w) + this.size.w\n                    this.walls[dir].p2.y = (this.row * this.size.h) + this.size.h;\n                    break;\n                case \"south\":\n                    this.walls[dir].p1.x = (this.col * this.size.w);\n                    this.walls[dir].p1.y = (this.row * this.size.h) + this.size.h;\n                    this.walls[dir].p2.x = (this.col * this.size.w) + this.size.w\n                    this.walls[dir].p2.y = (this.row * this.size.h) + this.size.h;\n                    break;\n                case \"west\":\n                    this.walls[dir].p1.x = (this.col * this.size.w);\n                    this.walls[dir].p1.y = (this.row * this.size.h);\n                    this.walls[dir].p2.x = (this.col * this.size.w);\n                    this.walls[dir].p2.y = (this.row * this.size.h) + this.size.h;\n                    break;\n                default:\n                    break;\n            }\n            this.node.size = this.size;\n            this.node.resize();\n        });\n    }\n\n    render(ctx, color, offsetX, offsetY) {\n        // DEBUG\n        if (color) {\n            ctx.fillStyle = color;\n            ctx.fillRect(this.col * this.size.w, this.row * this.size.h, this.size.w, this.size.h);\n        }\n        else {\n            ctx.strokeStyle = \"#53A1F3\";\n            Object.values(this.walls).forEach(({ p1, p2 }) => {\n                // debugger\n                ctx.beginPath();\n                ctx.moveTo(p1.x + offsetX, p1.y + offsetY);\n                ctx.lineTo(p2.x + offsetX, p2.y + offsetY);\n                ctx.closePath();\n                ctx.stroke();\n                // debugger\n            });\n        }\n\n        // OFFICIAL \n        // Object.values(this.walls).forEach(({ p1, p2 }) => {\n        //     // debugger\n        //     ctx.beginPath();\n        //     ctx.moveTo(p1.x + offsetX, p1.y + offsetY);\n        //     ctx.lineTo(p2.x + offsetX, p2.y + offsetY);\n        //     ctx.closePath();\n        //     ctx.stroke();\n        //     // debugger\n        // });\n\n        // this.node.render(ctx);\n    }\n}\n\nmodule.exports = Cell;\n\n//# sourceURL=webpack:///./src/maze/cell.js?");
+
+/***/ }),
+
+/***/ "./src/maze/grid.js":
+/*!**************************!*\
+  !*** ./src/maze/grid.js ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Cell = __webpack_require__(/*! ./cell */ \"./src/maze/cell.js\");\n\nconst { index } = __webpack_require__(/*! ../utils/utils */ \"./src/utils/utils.js\");\n// debugger\nclass Grid {\n    constructor(size, w, h, cellSize) {\n        this.cells = new Array(size * size);\n        this.size = {\n            w: w,\n            h: h\n        };\n        this.cellCount = size;\n\n        this.cellSize = cellSize;\n\n        this.populateGrid();\n        this.populateCells();\n    }\n\n    populateGrid() {\n        for (let j = 0; j < this.cellCount; j++) {\n            for (let i = 0; i < this.cellCount; i++) {\n                this.cells[index(i, j, this.cellCount)] = new Cell(i, j, this.cellSize);\n            }\n        }\n    }\n\n    populateCells() {\n        for (let i = 0; i < this.cells.length; i++)\n            Grid.populateCellWithNeighbors(this.cells[i], this.cells, this.cellCount, this.ctx);\n    }\n\n    static populateCellWithNeighbors(cell, cells, size) {\n        if (cells[index(cell.row - 1, cell.col, size)]) {\n            if (cell.row - 1 >= 0) {\n                cell.neighbors.push({ 'north': cells[index(cell.row - 1, cell.col, size)] });\n            }\n        }\n        if (cells[index(cell.row, cell.col + 1, size)]) {\n            cell.neighbors.push({ 'east': cells[index(cell.row, cell.col + 1, size)] });\n        }\n        if (cells[index(cell.row + 1, cell.col, size)]) {\n            if (cell.row + 1 <= size - 1) {\n                cell.neighbors.push({ 'south': cells[index(cell.row + 1, cell.col, size)] });\n            }\n        }\n        if (cells[index(cell.row, cell.col - 1, size)]) {\n            cell.neighbors.push({ 'west': cells[index(cell.row, cell.col - 1, size)] });\n        }\n\n        // cell.neighbors.forEach(cellN => {\n        //     ctx.fillStyle = \"#9A66AC\";\n        //     ctx.fillRect(cellN.row * cellN.size, cellN.col * cellN.size, cellN.size, cellN.size);\n        // });\n    }\n\n    render(ctx) {\n        for (let j = 0; j < this.cellCount; j++) {\n            for (let i = 0; i < this.cellCount; i++) {\n                let cell = this.cells[index(j, i, this.cellCount)];\n                cell.render(ctx, null, 0, 0);\n            }\n        }\n    }\n}\n\nmodule.exports = Grid;\n\n//# sourceURL=webpack:///./src/maze/grid.js?");
+
+/***/ }),
+
+/***/ "./src/maze/maze.js":
+/*!**************************!*\
+  !*** ./src/maze/maze.js ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const index = __webpack_require__(/*! ../utils/utils */ \"./src/utils/utils.js\");\n\nclass Maze {\n    constructor(size, width, height, grid) {\n        this.cellCount = size;\n        this.width = width;\n        this.height = height;\n        this.grid = grid;\n\n        this.generateMaze();\n    }\n\n\n    generateMaze() {\n        let currentCell = this.grid.cells[0];\n        currentCell.visited = true;\n        const stack = [currentCell];\n\n        while (stack.length !== 0) {\n            let neighbors = currentCell.neighbors.filter(obj => {\n                let cell = Object.values(obj)[0];\n                if (!cell) return null;\n                return !cell.visited;\n            });\n\n            let neighborDir;\n            let neighbor;\n\n            let neighborObj = neighbors[Math.floor(Math.random() * neighbors.length)];\n            if (neighborObj) {\n                neighborDir = Object.keys(neighborObj)[0];\n                neighbor = neighborObj[neighborDir];\n            }\n\n            if (neighborObj === undefined) {\n                currentCell = stack.pop();\n            }\n            else {\n                neighbor.visited = true;\n                switch (neighborDir) {\n                    case \"north\":\n                        delete currentCell.walls[\"north\"];\n                        delete neighbor.walls[\"south\"];\n                        currentCell.node.neighbors[\"north\"] = 1;\n                        neighbor.node.neighbors[\"south\"] = 1;\n                        break;\n                    case \"east\":\n                        delete currentCell.walls[\"east\"];\n                        delete neighbor.walls[\"west\"];\n                        currentCell.node.neighbors[\"east\"] = 1;\n                        neighbor.node.neighbors[\"west\"] = 1;\n                        break;\n                    case \"south\":\n                        delete currentCell.walls[\"south\"];\n                        delete neighbor.walls[\"north\"];\n                        currentCell.node.neighbors[\"south\"] = 1;\n                        neighbor.node.neighbors[\"north\"] = 1;\n                        break;\n                    case \"west\":\n                        delete currentCell.walls[\"west\"];\n                        delete neighbor.walls[\"east\"];\n                        currentCell.node.neighbors[\"west\"] = 1;\n                        neighbor.node.neighbors[\"east\"] = 1;\n                        break;\n                }\n                stack.push(neighbor);\n                currentCell = neighbor;\n            }\n        }\n    }\n\n    render(ctx) {\n        this.grid.render(ctx);\n    }\n}\n\nmodule.exports = Maze;\n\n//# sourceURL=webpack:///./src/maze/maze.js?");
+
+/***/ }),
+
+/***/ "./src/maze/solver/a_star.js":
+/*!***********************************!*\
+  !*** ./src/maze/solver/a_star.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const { heuristic } = __webpack_require__(/*! ../../utils/utils */ \"./src/utils/utils.js\");\nconst Vector = __webpack_require__(/*! ../../utils/vector */ \"./src/utils/vector.js\");\nconst Path = __webpack_require__(/*! ./path */ \"./src/maze/solver/path.js\");\n\nclass A_Star {\n    constructor(grid) {\n        this.grid = grid;\n        this.cells = grid.cells;\n        this.start = this.cells[0];\n        this.end = this.cells[this.cells.length - 1];\n        console.log(this.start, this.end);\n\n        this.openSet = [this.start];\n        this.closedSet = [];\n        this.path = new Path();\n        this.initialTime = Date.now();\n    }\n\n    update() {\n        if (this.openSet.length > 0) {\n            let winner = 0;\n            this.openSet.forEach((cell, idx) => {\n                // debugger\n                if (cell.node.f < this.openSet[winner].node.f) winner = idx;\n                // debugger\n            });\n\n            const current = this.openSet[winner];\n            // this.path = [];\n            if (current === this.end) {\n                console.log(`${(Date.now() - this.initialTime) / 1000.0} seconds`)\n                let temp = current.node;\n                this.path.addPoint(new Vector(temp.position.x, temp.position.y));\n                while (temp.parent) {\n                    this.path.addPoint(new Vector(temp.parent.position.x, temp.parent.position.y));\n                    // this.path.push(temp.parent);\n                    temp = temp.parent;\n                }\n                // this.path.push(temp);\n                // while (temp.parent) {\n                //     this.path.push(temp.parent);\n                //     temp = temp.parent;\n                // }\n                console.log('DONE');\n                this.finished = true;\n                this.openSet = [];\n                return;\n            }\n            // remove current from open set\n            for (let i = this.openSet.length - 1; i >= 0; i--) {\n                if (this.openSet[i] === current) {\n                    this.openSet.splice(i, 1);\n                    break;\n                }\n            }\n            // add current to closed set \n            // debugger\n            const neighbors = current.neighbors.filter(obj => !Object.keys(current.walls)\n                .includes(Object.keys(obj)[0]))\n                .map(obj => Object.values(obj)[0]);\n            // debugger\n            // console.log(neighbors);\n            neighbors.forEach(neighbor => {\n                // if (!this.closedSet.includes(neighbor)) {\n                if (!neighbor.node.visited) {\n                    const tentativeG = current.node.g + 1;\n                    let newPath = false;\n                    if (this.openSet.includes(neighbor) && tentativeG < neighbor.node.g) {\n                        neighbor.node.g = tentativeG;\n                        newPath = true;\n                        neighbor.node.visited = true;\n                    } else {\n                        neighbor.node.g = tentativeG;\n                        this.openSet.push(neighbor);\n                        newPath = true;\n                    }\n\n                    if (newPath) {\n                        neighbor.node.h = heuristic(neighbor.node, this.end.node);\n                        neighbor.node.f = neighbor.node.g + neighbor.node.h;\n                        neighbor.node.parent = current.node;\n                    }\n                }\n            });\n            current.node.visited = true;\n            this.closedSet.push(current);\n            // debugger\n            console.log('solving...');\n        }\n    }\n\n    render(ctx) {\n        // if (!this.finished) {\n        //     this.openSet.forEach(cell => cell.render(ctx, '#0f0', 0, 0));\n        //     this.closedSet.forEach(cell => cell.render(ctx, '#f00', 0, 0));\n        // }\n        if (!this.finished) return;\n        // this.path.forEach(node => {\n        //     // node.render();\n        //     ctx.strokeStyle = \"#0f0\";\n        //     ctx.beginPath();\n        //     if (node.parent)\n        //         ctx.moveTo(node.parent.position.x, node.parent.position.y);\n        //     else\n        //         ctx.moveTo(node.position.x, node.position.y);\n        //     ctx.lineTo(node.position.x, node.position.y);\n        //     ctx.closePath();\n        //     ctx.stroke();\n        // });\n        this.path.render(ctx);\n        // this.cells.forEach(cell => cell.node.render());\n    }\n}\n\nmodule.exports = A_Star;\n\n//# sourceURL=webpack:///./src/maze/solver/a_star.js?");
+
+/***/ }),
+
+/***/ "./src/maze/solver/node.js":
+/*!*********************************!*\
+  !*** ./src/maze/solver/node.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Vector = __webpack_require__(/*! ../../utils/vector */ \"./src/utils/vector.js\");\n\nclass Node {\n    constructor(i, j, size) {\n        this.i = i;\n        this.j = j;\n        this.position = new Vector((j * size.w) + (size.w / 2), (i * size.h) + (size.h / 2));\n\n        // fix to empty\n        this.neighbors = {\n            \"north\": Infinity,\n            \"east\": Infinity,\n            \"south\": Infinity,\n            \"west\": Infinity\n        };\n        this.size = size;\n        this.radius = 2;\n        this.visited = false;\n    }\n\n    resize() {\n        this.position.x = (this.j * this.size.w) + (this.size.w / 2);\n        this.position.y = (this.i * this.size.h) + (this.size.h / 2);\n    }\n\n    render(ctx) {\n        ctx.beginPath();\n        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);\n        ctx.closePath();\n        ctx.fillStyle = '#72af66';\n        ctx.fill();\n    }\n}\n\nmodule.exports = Node;\n\n//# sourceURL=webpack:///./src/maze/solver/node.js?");
+
+/***/ }),
+
+/***/ "./src/maze/solver/path.js":
+/*!*********************************!*\
+  !*** ./src/maze/solver/path.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("class Path {\n    constructor(points) {\n        this.points = points || [];\n        this.radius = 20;\n    }\n\n    addPoint(point) {\n        this.points.unshift(point);\n    }\n\n    getStart() {\n        return this.points[0];\n    }\n\n    getEnd() {\n        return this.points[this.points.length - 1];\n    }\n\n    render(ctx) {\n        let current, next;\n        // debugger\n        for (let i = 0; i < this.points.length - 1; i++) {\n            ctx.strokeStyle = \"#f00\";\n            ctx.strokeWidth = 2;\n            current = this.points[i];\n            next = this.points[i + 1];\n            ctx.beginPath();\n            ctx.moveTo(current.x, current.y);\n            ctx.lineTo(next.x, next.y);\n            ctx.stroke();\n            ctx.closePath();\n        }\n    }\n}\n\nmodule.exports = Path;\n\n//# sourceURL=webpack:///./src/maze/solver/path.js?");
+
+/***/ }),
+
+/***/ "./src/maze/wall.js":
+/*!**************************!*\
+  !*** ./src/maze/wall.js ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("class Wall {\n    constructor(p1, p2) {\n        this.p1 = p1\n        this.p2 = p2\n\n        this.a = this.p2.y - this.p1.y;\n        this.b = this.p1.x - this.p2.x;\n        this.c = this.a * this.p1.x + this.b * this.p1.y;\n    }\n\n    render() {\n        ctx.beginPath();\n        ctx.moveTo(this.p1.x, this.p1.y);\n        ctx.lineTo(this.p2.x, this.p2.y);\n        ctx.closePath();\n        ctx.stroke();\n    }\n}\n\nmodule.exports = Wall;\n\n//# sourceURL=webpack:///./src/maze/wall.js?");
+
+/***/ }),
+
+/***/ "./src/utils/resource_manager.js":
+/*!***************************************!*\
+  !*** ./src/utils/resource_manager.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("class ResourceManager {\n    constructor() {\n        this.resourceCache = {};\n        this.loading = [];\n        this.callbacks = [];\n    }\n\n    load(resource) {\n        if (resource instanceof Object) {\n            Object.keys(resource).forEach(key => this._load(key, resource[key]));\n        } else this._load(resource);\n    }\n\n    _load(key, url) {\n        if (this.resourceCache[key]) return this.resourceCache[key];\n        else {\n            this.loading.push(url);\n\n            const img = new Image();\n            img.onload = () => {\n                this.resourceCache[key] = img;\n                if (this.isReady()) this.callbacks.forEach(cb => cb());\n            }\n            img.src = url;\n            this.resourceCache[key] = img;\n        }\n    }\n\n    get(url) {\n        return this.resourceCache[url];\n    }\n\n    isReady() {\n        let ready = true;\n        for (let k in this.resourceCache) {\n            if (this.resourceCache.hasOwnProperty(k) && !(this.resourceCache[k]))\n                ready = false;\n        };\n        return ready;\n    }\n\n    onReady(func) {\n        this.callbacks.push(func);\n    }\n}\n\nmodule.exports = ResourceManager;\n\n//# sourceURL=webpack:///./src/utils/resource_manager.js?");
+
+/***/ }),
+
+/***/ "./src/utils/utils.js":
+/*!****************************!*\
+  !*** ./src/utils/utils.js ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("class Utils {\n    static index(i, j, rows) {\n        return i + (j * rows);\n    }\n\n    static clamp(num, min, max) {\n        return Math.max(min, Math.min(num, max))\n    }\n\n    static heuristic(a, b) {\n        const dx = b.position.x - a.position.x;\n        const dy = b.position.y - a.position.y;\n        return Math.sqrt(dx * dx + dy * dy);\n        // return Math.abs(dx) + Math.abs(dy);\n    };\n\n    static map(num, x1, y1, x2, y2) {\n        return (num - x1) * (y2 - x2) / (y1 - x1) + x2;\n    }\n}\n\nmodule.exports = Utils;\n\n//# sourceURL=webpack:///./src/utils/utils.js?");
+
+/***/ }),
+
+/***/ "./src/utils/vector.js":
+/*!*****************************!*\
+  !*** ./src/utils/vector.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("class Vector {\n    constructor(x, y) {\n        this.x = x || 0;\n        this.y = y || 0;\n    }\n\n    // return the angle of the vector in radians\n    getDirection() {\n        return Math.atan2(this.y, this.x);\n    };\n\n    // set the direction of the vector in radians\n    setDirection(direction) {\n        var magnitude = this.getMagnitude();\n        this.x = Math.cos(direction) * magnitude;\n        this.y = Math.sin(direction) * magnitude;\n        return this;\n    };\n\n    // get the magnitude of the vector\n    getMagnitude() {\n        // use pythagoras theorem to work out the magnitude of the vector\n        return Math.sqrt(this.x * this.x + this.y * this.y);\n    };\n\n    // set the magnitude of the vector\n    setMagnitude(magnitude) {\n        var direction = this.getDirection();\n        this.x = Math.cos(direction) * magnitude;\n        this.y = Math.sin(direction) * magnitude;\n        return this;\n    };\n\n    static add(v1, v2) {\n        return new Vector(v1.x + v2.x, v1.y + v2.y);\n        // this.x += vector.x;\n        // this.y += vector.y;\n    }\n\n    static sub(v1, v2) {\n        return new Vector(v1.x - v2.x, v1.y - v2.y);\n        // this.x -= vector.x;\n        // this.y -= vectory.y;\n    }\n\n    static mult(v, scalar) {\n        return new Vector(v.x * scalar, v.y * scalar);\n        // this.x *= scalar;\n        // this.y *= scalar;\n    }\n\n    static div(v, scalar) {\n        return new Vector(v.x / scalar, v.y / scalar);\n        // this.x /= scalar;\n        // this.y /= scalar;\n    }\n\n    add(vector) {\n        // return new Vector(this.x + vector.x, this.y + vector.y);\n        // debugger\n        this.x += vector.x;\n        this.y += vector.y;\n        return this;\n    }\n\n    subtract(vector) {\n        // return new Vector(this.x - vector.x, this.y - vector.y);\n        this.x = vector.x - this.x;\n        this.y = vector.y - this.y;\n        return this;\n    }\n\n    multiply(scalar) {\n        // return new Vector(this.x * scalar, this.y * scalar);\n        this.x *= scalar;\n        this.y *= scalar;\n        return this;\n    }\n\n    divide(scalar) {\n        // return new Vector(this.x / scalar, this.y / scalar);\n        this.x /= scalar;\n        this.y /= scalar;\n        return this;\n    }\n\n    dot(vector) {\n        // debugger\n        return (this.x * vector.x) + (this.y * vector.y);\n    }\n\n    angleBetween(vector, degrees) {\n        const step = this.dot(vector) / (this.getMagnitude() * vector.getMagnitude());\n        const theta = Math.acos(step);\n        if (degrees) return theta * 180 / Math.PI;\n        else return theta;\n    }\n\n    normalize() {\n        const dist = this.getMagnitude();\n        return new Vector(this.x / dist, this.y / dist);\n    }\n\n    project(vector) {\n        const normal = vector.normalize();\n        return normal.multiply(this.dot(normal));\n    }\n\n    limit(scalar) {\n        const limited = this.normalize().multiply(Math.min(this.getMagnitude(), scalar));\n        this.x = limited.x;\n        this.y = limited.y;\n        return this;\n    }\n\n    dist(vector) {\n        const dx = vector.x - this.x;\n        const dy = vector.y - this.y;\n        return Math.sqrt((dx * dx) + (dy * dy));\n    }\n\n    copy() {\n        return new Vector(this.x, this.y);\n    }\n\n    static getNormalPoint(p, a, b) {\n        const ap = Vector.sub(p, a);\n        const ab = Vector.sub(b, a);\n\n        const abNorm = ab.normalize();\n        abNorm.multiply(ap.dot(abNorm));\n\n        return Vector.add(a, abNorm);\n    }\n}\n\nmodule.exports = Vector;\n\n//# sourceURL=webpack:///./src/utils/vector.js?");
+
+/***/ })
+
+/******/ });
