@@ -58,7 +58,7 @@ class Grid {
         for (let j = 0; j < this.cellCount; j++) {
             for (let i = 0; i < this.cellCount; i++) {
                 let cell = this.cells[index(j, i, this.cellCount)];
-                cell.render(ctx, 0, 0);
+                cell.render(ctx, null, 0, 0);
             }
         }
     }

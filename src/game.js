@@ -1,6 +1,6 @@
 const Grid = require('./maze/grid');
 const Maze = require('./maze/maze');
-const Vector = require('./utils/vector');
+const A_Star = require('./maze/solver/a_star');
 
 class Game {
     constructor(size, rm) {
@@ -17,6 +17,8 @@ class Game {
         this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);
         this.maze = new Maze(this.cellCount, this.width, this.height, this.grid);
 
+        this.solver = new A_Star(this.grid);
+
         this.initialTime = Date.now();
     }
 
@@ -32,6 +34,12 @@ class Game {
             w: this.width / this.cellCount,
             h: this.height / this.cellCount
         };
+        if (this.grid) {
+            this.grid.cells.forEach(cell => {
+                cell.size = this.cellSize;
+                cell.resize();
+            });
+        }
         // const widthToHeight = 4 / 3;
         // let width = window.innerWidth - 5;
         // let height = window.innerHeight - 5;
@@ -59,12 +67,13 @@ class Game {
     }
 
     update() {
-
+        this.solver.update();
     }
 
     render() {
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.maze.render(this.ctx);
+        this.solver.render(this.ctx);
         // console.log('rendering...');
     }
 }

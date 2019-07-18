@@ -27,21 +27,72 @@ class Cell {
                 new Vector(this.col * this.size.w, this.row * this.size.h),
                 new Vector(this.col * this.size.w, (this.row * this.size.h) + this.size.h)
             )
-        }
-        debugger
+        };
+        // debugger
     }
 
-    render(ctx, offsetX, offsetY) {
-        ctx.strokeStyle = "#53A1F3";
-        Object.values(this.walls).forEach(({ p1, p2 }) => {
-            // debugger
-            ctx.beginPath();
-            ctx.moveTo(p1.x + offsetX, p1.y + offsetY);
-            ctx.lineTo(p2.x + offsetX, p2.y + offsetY);
-            ctx.closePath();
-            ctx.stroke();
-            // debugger
+    resize() {
+        Object.keys(this.walls).forEach(dir => {
+            switch (dir) {
+                case "north":
+                    this.walls[dir].p1.x = this.col * this.size.w;
+                    this.walls[dir].p1.y = this.row * this.size.h;
+                    this.walls[dir].p2.x = (this.col * this.size.w) + this.size.w
+                    this.walls[dir].p2.y = this.row * this.size.h;
+                    break;
+                case "east":
+                    this.walls[dir].p1.x = (this.col * this.size.w) + this.size.w;
+                    this.walls[dir].p1.y = this.row * this.size.h;
+                    this.walls[dir].p2.x = (this.col * this.size.w) + this.size.w
+                    this.walls[dir].p2.y = (this.row * this.size.h) + this.size.h;
+                    break;
+                case "south":
+                    this.walls[dir].p1.x = (this.col * this.size.w);
+                    this.walls[dir].p1.y = (this.row * this.size.h) + this.size.h;
+                    this.walls[dir].p2.x = (this.col * this.size.w) + this.size.w
+                    this.walls[dir].p2.y = (this.row * this.size.h) + this.size.h;
+                    break;
+                case "west":
+                    this.walls[dir].p1.x = (this.col * this.size.w);
+                    this.walls[dir].p1.y = (this.row * this.size.h);
+                    this.walls[dir].p2.x = (this.col * this.size.w);
+                    this.walls[dir].p2.y = (this.row * this.size.h) + this.size.h;
+                    break;
+                default:
+                    break;
+            }
         });
+    }
+
+    render(ctx, color, offsetX, offsetY) {
+        // DEBUG
+        if (color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.col * this.size.w, this.row * this.size.h, this.size.w, this.size.h);
+        }
+        else {
+            ctx.strokeStyle = "#53A1F3";
+            Object.values(this.walls).forEach(({ p1, p2 }) => {
+                // debugger
+                ctx.beginPath();
+                ctx.moveTo(p1.x + offsetX, p1.y + offsetY);
+                ctx.lineTo(p2.x + offsetX, p2.y + offsetY);
+                ctx.closePath();
+                ctx.stroke();
+                // debugger
+            });
+        }
+
+        // OFFICIAL 
+        // Object.values(this.walls).forEach(({ p1, p2 }) => {
+        //     // debugger
+        //     ctx.beginPath();
+        //     ctx.moveTo(p1.x + offsetX, p1.y + offsetY);
+        //     ctx.lineTo(p2.x + offsetX, p2.y + offsetY);
+        //     ctx.closePath();
+        //     ctx.stroke();
+        //     // debugger
+        // });
 
         // this.node.render(ctx);
     }

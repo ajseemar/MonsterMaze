@@ -2,7 +2,7 @@ const Vector = require('../../utils/vector');
 
 class Node {
     constructor(i, j, size) {
-        this.position = new Vector((j * size) + (size / 2), (i * size) + (size / 2));
+        this.position = new Vector((j * size.w) + (size.w / 2), (i * size.h) + (size.h / 2));
 
         // fix to empty
         this.neighbors = {
@@ -12,6 +12,7 @@ class Node {
             "west": Infinity
         };
         this.size = 2;
+        this.visited = false;
     }
 
     render(ctx) {
