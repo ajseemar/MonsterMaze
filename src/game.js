@@ -1,22 +1,37 @@
+const Grid = require('./maze/grid');
+const Maze = require('./maze/maze');
+const Vector = require('./utils/vector');
+
 class Game {
     constructor(size, rm) {
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
+
+        this.cellCount = size;
         // this.canvas.width = window.innerWidth;
         // this.canvas.height = window.innerHeight;
         window.addEventListener('resize', this.resize.bind(this), false);
         window.addEventListener('orientationchange', this.resize.bind(this), false);
         this.resize();
+
+        this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);
+        this.maze = new Maze(this.cellCount, this.width, this.height, this.grid);
+
+        this.initialTime = Date.now();
     }
 
     resize() {
         const ratio = 16 / 9;
-        c.width = window.innerWidth;
-        c.height = window.innerHeight;
-        // if (c.width > c.height / ratio) c.width = c.height * ratio;
-        // else if (c.height > c.width / ration) c.height = c.width * ratio;
-        this.width = c.width;
-        this.height = c.height;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        // if (this.canvas.width > this.canvas.height / ratio) this.canvas.width = this.canvas.height * ratio;
+        // else if (this.canvas.height > this.canvas.width / ration) this.canvas.height = this.canvas.width * ratio;
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+        this.cellSize = {
+            w: this.width / this.cellCount,
+            h: this.height / this.cellCount
+        };
         // const widthToHeight = 4 / 3;
         // let width = window.innerWidth - 5;
         // let height = window.innerHeight - 5;
@@ -48,7 +63,9 @@ class Game {
     }
 
     render() {
-
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.maze.render(this.ctx);
+        // console.log('rendering...');
     }
 }
 
