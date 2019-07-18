@@ -1,5 +1,4 @@
 const { heuristic } = require('../../utils/utils');
-const Vector = require('../../utils/vector');
 const Path = require('./path');
 
 class A_Star {
@@ -20,28 +19,18 @@ class A_Star {
         if (this.openSet.length > 0) {
             let winner = 0;
             this.openSet.forEach((cell, idx) => {
-                // debugger
                 if (cell.node.f < this.openSet[winner].node.f) winner = idx;
-                // debugger
             });
 
             const current = this.openSet[winner];
-            // this.path = [];
             if (current === this.end) {
                 console.log(`${(Date.now() - this.initialTime) / 1000.0} seconds`)
                 let temp = current.node;
-                this.path.addPoint(new Vector(temp.position.x, temp.position.y));
+                this.path.addNode(temp);
                 while (temp.parent) {
-                    this.path.addPoint(new Vector(temp.parent.position.x, temp.parent.position.y));
-                    // this.path.push(temp.parent);
+                    this.path.addNode(temp.parent);
                     temp = temp.parent;
                 }
-                // this.path.push(temp);
-                // while (temp.parent) {
-                //     this.path.push(temp.parent);
-                //     temp = temp.parent;
-                // }
-                console.log('DONE');
                 this.finished = true;
                 this.openSet = [];
                 return;
@@ -54,14 +43,10 @@ class A_Star {
                 }
             }
             // add current to closed set 
-            // debugger
             const neighbors = current.neighbors.filter(obj => !Object.keys(current.walls)
                 .includes(Object.keys(obj)[0]))
                 .map(obj => Object.values(obj)[0]);
-            // debugger
-            // console.log(neighbors);
             neighbors.forEach(neighbor => {
-                // if (!this.closedSet.includes(neighbor)) {
                 if (!neighbor.node.visited) {
                     const tentativeG = current.node.g + 1;
                     let newPath = false;
@@ -84,31 +69,12 @@ class A_Star {
             });
             current.node.visited = true;
             this.closedSet.push(current);
-            // debugger
-            console.log('solving...');
         }
     }
 
     render(ctx) {
-        // if (!this.finished) {
-        //     this.openSet.forEach(cell => cell.render(ctx, '#0f0', 0, 0));
-        //     this.closedSet.forEach(cell => cell.render(ctx, '#f00', 0, 0));
-        // }
         if (!this.finished) return;
-        // this.path.forEach(node => {
-        //     // node.render();
-        //     ctx.strokeStyle = "#0f0";
-        //     ctx.beginPath();
-        //     if (node.parent)
-        //         ctx.moveTo(node.parent.position.x, node.parent.position.y);
-        //     else
-        //         ctx.moveTo(node.position.x, node.position.y);
-        //     ctx.lineTo(node.position.x, node.position.y);
-        //     ctx.closePath();
-        //     ctx.stroke();
-        // });
         this.path.render(ctx);
-        // this.cells.forEach(cell => cell.node.render());
     }
 }
 

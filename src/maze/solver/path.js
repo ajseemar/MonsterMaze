@@ -1,32 +1,31 @@
 class Path {
-    constructor(points) {
-        this.points = points || [];
+    constructor(nodes) {
+        this.nodes = nodes || [];
         this.radius = 20;
     }
 
-    addPoint(point) {
-        this.points.unshift(point);
+    addNode(node) {
+        this.nodes.push(node);
     }
 
     getStart() {
-        return this.points[0];
+        return this.nodes[0].position;
     }
 
     getEnd() {
-        return this.points[this.points.length - 1];
+        return this.nodes[this.points.length - 1].position;
     }
 
     render(ctx) {
         let current, next;
-        // debugger
-        for (let i = 0; i < this.points.length - 1; i++) {
+        for (let i = 0; i < this.nodes.length - 1; i++) {
             ctx.strokeStyle = "#f00";
             ctx.strokeWidth = 2;
-            current = this.points[i];
-            next = this.points[i + 1];
+            current = this.nodes[i];
+            next = this.nodes[i + 1];
             ctx.beginPath();
-            ctx.moveTo(current.x, current.y);
-            ctx.lineTo(next.x, next.y);
+            ctx.moveTo(current.position.x, current.position.y);
+            ctx.lineTo(next.position.x, next.position.y);
             ctx.stroke();
             ctx.closePath();
         }

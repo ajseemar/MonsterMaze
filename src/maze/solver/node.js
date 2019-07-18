@@ -22,14 +22,6 @@ class Node {
         this.position.x = (this.j * this.size.w) + (this.size.w / 2);
         this.position.y = (this.i * this.size.h) + (this.size.h / 2);
     }
-
-    render(ctx) {
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fillStyle = '#72af66';
-        ctx.fill();
-    }
 }
 
 module.exports = Node;

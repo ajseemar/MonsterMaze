@@ -8,8 +8,6 @@ class Game {
         this.ctx = this.canvas.getContext('2d');
 
         this.cellCount = size;
-        // this.canvas.width = window.innerWidth;
-        // this.canvas.height = window.innerHeight;
         window.addEventListener('resize', this.resize.bind(this), false);
         window.addEventListener('orientationchange', this.resize.bind(this), false);
         this.resize();
@@ -40,6 +38,9 @@ class Game {
                 cell.resize();
             });
         }
+        // if (this.solver && this.solver.finished) {
+        //     this.solver.path.resize();
+        // }
         // const widthToHeight = 4 / 3;
         // let width = window.innerWidth - 5;
         // let height = window.innerHeight - 5;
@@ -74,7 +75,6 @@ class Game {
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.maze.render(this.ctx);
         this.solver.render(this.ctx);
-        // console.log('rendering...');
     }
 }
 
