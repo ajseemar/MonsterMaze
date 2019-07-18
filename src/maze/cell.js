@@ -61,6 +61,8 @@ class Cell {
                 default:
                     break;
             }
+            this.node.size = this.size;
+            this.node.resize();
         });
     }
 
