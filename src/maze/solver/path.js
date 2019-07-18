@@ -2,6 +2,8 @@ class Path {
     constructor(nodes) {
         this.nodes = nodes || [];
         this.radius = 20;
+
+        this.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
     }
 
     clear() {
@@ -23,7 +25,8 @@ class Path {
     render(ctx) {
         let current, next;
         for (let i = 0; i < this.nodes.length - 1; i++) {
-            ctx.strokeStyle = "#f00";
+            ctx.strokeStyle = this.color;
+            // ctx.strokeStyle = "#f00";
             ctx.strokeWidth = 2;
             current = this.nodes[i];
             next = this.nodes[i + 1];

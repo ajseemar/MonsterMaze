@@ -4,13 +4,15 @@ const Node = require('./node');
 
 class A_Star {
     constructor(start, end, cells) {
-        // this.cells = cells;
+        this.cells = cells;
         // this.cells.forEach(cell => cell.node = Object.assign({}, cell.node));
-        // this.createNodes();
+        this.createNodes();
         this.cellCount = Math.sqrt(cells.length);
         // this.nodes = nodes;
-        this.start = start;
-        this.end = end;
+        // this.start = start;
+        // this.end = end;
+        this.start = cells[start];
+        this.end = cells[end];
         // console.log(this.start, this.end);
         // debugger
         this.openSet = [this.start];
@@ -22,7 +24,7 @@ class A_Star {
     }
 
     createNodes() {
-        this.cells.forEach(cell => cell.node = new Node(cell.row, cell.col, cell.size));
+        this.cells.forEach(cell => cell.node = Object.assign(Object.create(Object.getPrototypeOf(cell.node)), cell.node));
     }
 
     // updateSolver(end) {
@@ -34,24 +36,28 @@ class A_Star {
 
     updateSolver(startIdx, endIdx) {
         // debugger
-        // this.cells.forEach(cell => {
-        //     cell.node.f = 0;
-        //     cell.node.g = 0;
-        //     cell.node.h = 0;
-        //     cell.node.visited = false;
-        //     // cell.node.position = Object.assign(cell.node.position);
-        // });
+        // if (!this.finished) return;
+        // debugger
+        this.cells.forEach(cell => {
+            cell.node.f = 0;
+            cell.node.g = 0;
+            cell.node.h = 0;
+            cell.node.visited = false;
+            cell.node.parent = null;
+            // cell.node.position = Object.assign(cell.node.position);
+        });
+        // console.log(this.path, '-------------')
         // this.createNodes();
 
         // this.enemy.updateSolver(end);
-        this.start = startIdx;
-        this.end = endIdx;
-        // this.start = this.cells[startIdx];
-        // this.end = this.cells[endIdx];
+        // this.start = startIdx;
+        // this.end = endIdx;
+        this.start = this.cells[startIdx];
+        this.end = this.cells[endIdx];
         this.openSet.push(this.start);
         this.closedSet = [];
         this.finished = false;
-        this.path.clear();
+        // this.path.clear();
         this.initialTime = Date.now();
         // debugger
     }
@@ -67,6 +73,7 @@ class A_Star {
     // }
 
     update() {
+        if (!this.start || !this.end) return;
         if (this.openSet.length > 0) {
             // console.log(this.openSet);
             let winner = 0;
@@ -77,7 +84,8 @@ class A_Star {
 
             const current = this.openSet[winner];
             if (current === this.end) {
-                console.log(`${(Date.now() - this.initialTime) / 1000.0} seconds`)
+                // console.log(`${(Date.now() - this.initialTime) / 1000.0} seconds`)
+                this.path.clear();
                 let temp = current.node;
                 this.path.addNode(temp);
                 while (temp.parent) {
@@ -113,6 +121,7 @@ class A_Star {
                     } else {
                         neighbor.node.g = tentativeG;
                         this.openSet.push(neighbor);
+                        neighbor.node.visited = true;
                         newPath = true;
                     }
 

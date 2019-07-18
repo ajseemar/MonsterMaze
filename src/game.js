@@ -15,6 +15,7 @@ class Game {
         window.addEventListener('orientationchange', this.resize.bind(this), false);
         this.resize();
 
+        this.rm = rm;
         this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);
         this.maze = new Maze(this.cellCount, this.cellSize, this.width, this.height, this.grid);
 
@@ -27,32 +28,62 @@ class Game {
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = this.grid.cells[index(row, col, this.cellCount)];
-        this.enemy = new Enemy(rm.get('zombie'), this.cellSize, this.grid.cells, end);
-        this.enemy2 = new Enemy(rm.get('zombie'), this.cellSize, this.grid.cells, end);
+        this.enemy = new Enemy("enemy_1", rm.get('zombie'), this.cellSize, this.grid.cells, end);
+        this.enemy2 = new Enemy("enemy_2", rm.get('zombie'), this.cellSize, this.grid.cells, end);
 
         // window.addEventListener('mousemove', this.handleRotation.bind(this));
         // window.addEventListener('click', this.handleClick.bind(this));
-        window.setInterval(this.updateSolver.bind(this), 1000);
+        window.setInterval(this.updateSolver.bind(this), 500);
+        // window.setInterval(this.spawnEnemy.bind(this), 5000);
+        this.zombies = [];
 
+        for (let i = 0; i < 3; i++) this.spawnEnemy();
         this.initialTime = Date.now();
     }
 
+    spawnEnemy() {
+        let row = Math.floor(this.player.position.y / this.player.size.h);
+        let col = Math.floor(this.player.position.x / this.player.size.w);
+        let end = index(row, col, this.cellCount);
+        this.zombies.push(new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end));
+        // new Enemy(rm.get('zombie'), this.cellSize, this.grid.cells.map(cell =>
+        //     Object.assign(Object.create(Object.getPrototypeOf(cell)), cell)
+        // ), endIdx);
+    }
+
     updateSolver() {
-        // if (!this.enemy.solver.finished) return;
-        this.grid.cells.forEach(cell => {
-            cell.node.f = 0;
-            cell.node.g = 0;
-            cell.node.h = 0;
-            cell.node.visited = false;
-            // cell.node.position = Object.assign(cell.node.position);
-        });
+        // if (this.enemy.solver.finished) return;
+        // this.grid.cells.forEach(cell => {
+        //     cell.node.f = 0;
+        //     cell.node.g = 0;
+        //     cell.node.h = 0;
+        //     cell.node.visited = false;
+        //     // cell.node.position = Object.assign(cell.node.position);
+        // });
+        // this.enemy.solver.forEach(cell => {
+        //     cell.node.f = 0;
+        //     cell.node.g = 0;
+        //     cell.node.h = 0;
+        //     cell.node.visited = false;
+        //     // cell.node.position = Object.assign(cell.node.position);
+        // });
+        // this.enemy2.solver.forEach(cell => {
+        //     cell.node.f = 0;
+        //     cell.node.g = 0;
+        //     cell.node.h = 0;
+        //     cell.node.visited = false;
+        //     // cell.node.position = Object.assign(cell.node.position);
+        // });
         // debugger
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
-        let end = this.grid.cells[index(row, col, this.cellCount)];
-
-        this.enemy.updateSolver(end);
-        this.enemy2.updateSolver(end);
+        // let end = this.grid.cells[index(row, col, this.cellCount)];
+        // let end = this.grid.cells[index(row, col, this.cellCount)];
+        let end = index(row, col, this.cellCount);
+        // let end2 = this.enemy.solver.cells[index(row, col, this.cellCount)];
+        this.zombies.forEach(zombie => zombie.updateSolver(end));
+        // this.enemy.updateSolver(end);
+        // this.enemy2.updateSolver(end);
         // this.enemy.updateSolver(index(row, col, this.cellCount));
     }
 
@@ -75,8 +106,11 @@ class Game {
             });
         }
         if (this.player) this.player.sprite.resize(this.cellSize);
-        if (this.enemy) this.enemy.sprite.resize(this.cellSize);
-        if (this.enemy2) this.enemy2.sprite.resize(this.cellSize);
+        if (this.zombies && this.zombies.length > 0) {
+            this.zombies.forEach(zombie => zombie.resize(this.cellSize));
+        }
+        // if (this.enemy) this.enemy.resize(this.cellSize);
+        // if (this.enemy2) this.enemy2.resize(this.cellSize);
         // if (this.solver && this.solver.finished) {
         //     this.solver.path.resize();
         // }
@@ -162,8 +196,11 @@ class Game {
             this.player.handleInput();
             // this.player.handleRotation(this.mousePos);
         }
-        this.enemy.update();
-        this.enemy2.update();
+        // this.enemy.update();
+        this.zombies.forEach(zombie => {
+            zombie.update();
+        });
+        // this.enemy2.update();
         this.player.update(dt);
     }
 
@@ -172,8 +209,11 @@ class Game {
         this.maze.render(this.ctx);
         // this.solver.render(this.ctx);
         this.player.render(this.ctx, { x: 0, y: 0 });
-        this.enemy.render(this.ctx);
-        this.enemy2.render(this.ctx);
+        // this.enemy.render(this.ctx);
+        // this.enemy2.render(this.ctx);
+        this.zombies.forEach(zombie => {
+            zombie.render(this.ctx);
+        });
     }
 }
 
