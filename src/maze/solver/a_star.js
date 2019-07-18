@@ -1,10 +1,14 @@
-const { heuristic } = require('../../utils/utils');
+const { heuristic, index } = require('../../utils/utils');
 const Path = require('./path');
+const Node = require('./node');
 
 class A_Star {
-    constructor(start, end, nodes) {
+    constructor(start, end, cells) {
         // this.cells = cells;
-        this.nodes = nodes;
+        // this.cells.forEach(cell => cell.node = Object.assign({}, cell.node));
+        // this.createNodes();
+        this.cellCount = Math.sqrt(cells.length);
+        // this.nodes = nodes;
         this.start = start;
         this.end = end;
         // console.log(this.start, this.end);
@@ -12,23 +16,62 @@ class A_Star {
         this.openSet = [this.start];
         this.closedSet = [];
         this.path = new Path();
+
         this.initialTime = Date.now();
+        // debugger
     }
 
-    updateSolver(start, end) {
-        this.start = start;
-        this.end = end;
+    createNodes() {
+        this.cells.forEach(cell => cell.node = new Node(cell.row, cell.col, cell.size));
+    }
+
+    // updateSolver(end) {
+    //     let row = Math.floor(this.position.y / this.size.h);
+    //     let col = Math.floor(this.position.x / this.size.w);
+    //     let start = this.cells[index(row, col, this.cellCount)];
+    //     this.solver.updateSolver(start, end);
+    // }
+
+    updateSolver(startIdx, endIdx) {
+        // debugger
+        // this.cells.forEach(cell => {
+        //     cell.node.f = 0;
+        //     cell.node.g = 0;
+        //     cell.node.h = 0;
+        //     cell.node.visited = false;
+        //     // cell.node.position = Object.assign(cell.node.position);
+        // });
+        // this.createNodes();
+
+        // this.enemy.updateSolver(end);
+        this.start = startIdx;
+        this.end = endIdx;
+        // this.start = this.cells[startIdx];
+        // this.end = this.cells[endIdx];
         this.openSet.push(this.start);
         this.closedSet = [];
         this.finished = false;
         this.path.clear();
         this.initialTime = Date.now();
+        // debugger
     }
+
+    // updateSolver(start, end) {
+    //     this.start = start;
+    //     this.end = end;
+    //     this.openSet.push(this.start);
+    //     this.closedSet = [];
+    //     this.finished = false;
+    //     this.path.clear();
+    //     this.initialTime = Date.now();
+    // }
 
     update() {
         if (this.openSet.length > 0) {
+            // console.log(this.openSet);
             let winner = 0;
             this.openSet.forEach((cell, idx) => {
+                if (!cell) { console.log(this.openSet) }
                 if (cell.node.f < this.openSet[winner].node.f) winner = idx;
             });
 
@@ -43,6 +86,7 @@ class A_Star {
                 }
                 this.finished = true;
                 this.openSet = [];
+                // console.log('done');
                 return;
             }
             // remove current from open set
@@ -81,6 +125,7 @@ class A_Star {
             });
             current.node.visited = true;
             this.closedSet.push(current);
+            // console.log('solving...')
         }
     }
 

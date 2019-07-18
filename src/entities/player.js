@@ -9,8 +9,8 @@ class Player extends Sprite {
         // this.radius = this.size * 3 / 2;
 
         this.position = {
-            x: cellSize.w - cellSize.w / 2,
-            y: cellSize.h - cellSize.h / 2
+            x: this.sprite.width - this.sprite.width / 2,
+            y: this.sprite.height - this.sprite.height / 2
         };
 
         this.speed = 250;

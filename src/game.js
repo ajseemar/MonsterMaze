@@ -28,6 +28,7 @@ class Game {
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = this.grid.cells[index(row, col, this.cellCount)];
         this.enemy = new Enemy(rm.get('zombie'), this.cellSize, this.grid.cells, end);
+        this.enemy2 = new Enemy(rm.get('zombie'), this.cellSize, this.grid.cells, end);
 
         // window.addEventListener('mousemove', this.handleRotation.bind(this));
         // window.addEventListener('click', this.handleClick.bind(this));
@@ -37,16 +38,22 @@ class Game {
     }
 
     updateSolver() {
+        // if (!this.enemy.solver.finished) return;
         this.grid.cells.forEach(cell => {
             cell.node.f = 0;
             cell.node.g = 0;
             cell.node.h = 0;
             cell.node.visited = false;
-        })
+            // cell.node.position = Object.assign(cell.node.position);
+        });
+        // debugger
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = this.grid.cells[index(row, col, this.cellCount)];
+
         this.enemy.updateSolver(end);
+        this.enemy2.updateSolver(end);
+        // this.enemy.updateSolver(index(row, col, this.cellCount));
     }
 
     resize() {
@@ -67,6 +74,9 @@ class Game {
                 cell.resize();
             });
         }
+        if (this.player) this.player.sprite.resize(this.cellSize);
+        if (this.enemy) this.enemy.sprite.resize(this.cellSize);
+        if (this.enemy2) this.enemy2.sprite.resize(this.cellSize);
         // if (this.solver && this.solver.finished) {
         //     this.solver.path.resize();
         // }
@@ -153,6 +163,7 @@ class Game {
             // this.player.handleRotation(this.mousePos);
         }
         this.enemy.update();
+        this.enemy2.update();
         this.player.update(dt);
     }
 
@@ -162,6 +173,7 @@ class Game {
         // this.solver.render(this.ctx);
         this.player.render(this.ctx, { x: 0, y: 0 });
         this.enemy.render(this.ctx);
+        this.enemy2.render(this.ctx);
     }
 }
 
