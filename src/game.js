@@ -4,6 +4,8 @@ const Maze = require('./maze/maze');
 const Player = require('./entities/player');
 const InputManager = require('./utils/input');
 const Enemy = require('./entities/enemy');
+const Cell = require('./maze/cell');
+
 
 class Game {
     constructor(size, rm) {
@@ -45,10 +47,15 @@ class Game {
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = index(row, col, this.cellCount);
+        // this.zombies.push(new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end));
+        // let cells = this.grid.cells.map(cell => new Cell(cell.row, cell.col, cell.size));
+        let cells = Array.from(this.grid.cells);
+        cells.forEach((cell, idx) => {
+            // cell = Object.assign(Object.create(Object.getPrototypeOf(cell)), cell);
+            cell = new Cell(cell.row, cell.col, cell.size);
+            cells[idx] = cell;
+        })
         this.zombies.push(new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end));
-        // new Enemy(rm.get('zombie'), this.cellSize, this.grid.cells.map(cell =>
-        //     Object.assign(Object.create(Object.getPrototypeOf(cell)), cell)
-        // ), endIdx);
     }
 
     updateSolver() {

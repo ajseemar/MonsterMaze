@@ -6,7 +6,7 @@ class A_Star {
     constructor(start, end, cells) {
         this.cells = cells;
         // this.cells.forEach(cell => cell.node = Object.assign({}, cell.node));
-        this.createNodes();
+        // this.createNodes();
         this.cellCount = Math.sqrt(cells.length);
         // this.nodes = nodes;
         // this.start = start;

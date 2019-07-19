@@ -30,6 +30,14 @@ class Enemy extends Sprite {
         // this.cells = cells;
     }
 
+    resize(size) {
+        this.aspectRatio = size.h / size.w * 0.75;
+        // console.log(this.sprite);
+        // console.log(this.sprite.width, this.sprite.height);
+        // this.sprite.width = this.size.width / this.aspectRatio;
+        // this.sprite.height = this.size.height / this.aspectRatio;
+        if (this.solver.finished) this.solver.path.resize();
+    }
     updateSolver(endIdx) {
         let row = Math.floor(this.position.y / this.size.h);
         let col = Math.floor(this.position.x / this.size.w);
