@@ -25,6 +25,7 @@ class A_Star {
 
     createNodes() {
         this.cells.forEach(cell => cell.node = Object.assign({}, Object.create(Object.getPrototypeOf(cell.node)), cell.node));
+        // this.cells.forEach((cell, idx) => this.cells[idx].node = new Node(cell.row, cell.col, cell.size));
     }
 
     // updateSolver(end) {
@@ -53,10 +54,11 @@ class A_Star {
         // this.end = endIdx;
         this.start = this.cells[startIdx];
         this.end = this.cells[endIdx];
+        // console.log(this.start, this.end);
         this.openSet.push(this.start);
         this.closedSet = [];
         this.finished = false;
-        // this.path.clear();
+        this.path.clear();
         this.initialTime = Date.now();
         // debugger
     }
@@ -80,10 +82,19 @@ class A_Star {
                 if (!cell) { console.log(this.openSet) }
                 if (cell.node.f < this.openSet[winner].node.f) winner = idx;
             });
-
             const current = this.openSet[winner];
+
+            this.path.clear();
+            let temp = current.node;
+            this.path.addNode(temp);
+            while (temp.parent) {
+                this.path.addNode(temp.parent);
+                temp = temp.parent;
+            }
+
             if (current === this.end) {
                 // console.log(`${(Date.now() - this.initialTime) / 1000.0} seconds`)
+                // this.path.clear();
                 this.path.clear();
                 let temp = current.node;
                 this.path.addNode(temp);

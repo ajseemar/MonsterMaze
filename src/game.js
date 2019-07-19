@@ -7,6 +7,9 @@ const Enemy = require('./entities/enemy');
 const Cell = require('./maze/cell');
 
 
+// GAME CONSTANTS
+const MAX_ENEMIES = 3;
+
 class Game {
     constructor(size, rm) {
         this.canvas = document.getElementById('canvas');
@@ -22,7 +25,7 @@ class Game {
         this.maze = new Maze(this.cellCount, this.cellSize, this.width, this.height, this.grid);
 
         this.ih = new InputManager();
-        this.player = new Player(rm.get('player_standing'), this.cellSize, this.ih);
+        window.player = this.player = new Player(rm.get('player_standing'), this.cellSize, this.ih);
 
         // let row = Math.floor(this.maze.height / this.player.position.y);
         // let col = Math.floor(this.maze.width / this.player.position.x);
@@ -42,17 +45,18 @@ class Game {
     }
 
     spawnEnemy() {
-        if (this.zombies.length > 5) return;
+        if (this.zombies.length >= MAX_ENEMIES) return;
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = index(row, col, this.cellCount);
         // this.zombies.push(new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end));
         // let cells = this.grid.cells.map(cell => new Cell(cell.row, cell.col, cell.size));
         let cells = Array.from(this.grid.cells);
-        cells.forEach((cell, idx) => {
-            cells[idx] = Object.assign({}, Object.create(Object.getPrototypeOf(cell)), cell);
-            // cells[idx] = new Cell(cell.row, cell.col, cell.size);
-        });
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+            cells[i] = Object.assign({}, Object.create(Object.getPrototypeOf(cell)), cell);
+            // cells[i] = new Cell(cell.row, cell.col, cell.size);
+        }
         let zombie = new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end)
         this.zombies.push(zombie);
         window.setInterval(this.updateSolver.bind(this, zombie), 1000);
@@ -64,6 +68,8 @@ class Game {
         let col = Math.floor(this.player.position.x / this.player.size.w);
         // let end = this.grid.cells[index(row, col, this.cellCount)];
         // let end = this.grid.cells[index(row, col, this.cellCount)];
+        // console.log(player.position.x, player.position.y);
+        // console.log(row, col);
         let end = index(row, col, this.cellCount);
         // let end2 = this.enemy.solver.cells[index(row, col, this.cellCount)];
         // this.zombies.forEach(zombie => zombie.updateSolver(end));
@@ -182,13 +188,16 @@ class Game {
         // this.enemy.update();
         this.zombies.forEach(zombie => {
             zombie.update();
+            // zombie.solver.update();
+            // this.updateSolver(zombie);
         });
         // this.enemy2.update();
         this.player.update(dt);
     }
 
     render() {
-        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.ctx.fillStyle = "#000";
+        this.ctx.fillRect(0, 0, this.width, this.height);
         this.maze.render(this.ctx);
         // this.solver.render(this.ctx);
         this.player.render(this.ctx, { x: 0, y: 0 });

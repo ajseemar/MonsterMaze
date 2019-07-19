@@ -1,6 +1,7 @@
 const KEYS = require('../utils/keys');
 const Sprite = require('./sprite');
 // const Bullet = require('./bullet');
+const Vector = require('../utils/vector');
 
 class Player extends Sprite {
     constructor(sprite, cellSize, inputHandler) {
@@ -8,10 +9,7 @@ class Player extends Sprite {
         // this.size = size / 3;
         // this.radius = this.size * 3 / 2;
 
-        this.position = {
-            x: this.sprite.width - this.sprite.width / 2,
-            y: this.sprite.height - this.sprite.height / 2
-        };
+        this.position = new Vector(this.sprite.width - this.sprite.width / 2, this.sprite.height - this.sprite.height / 2);
 
         this.speed = 250;
 

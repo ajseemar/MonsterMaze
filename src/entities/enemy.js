@@ -2,6 +2,7 @@ const { index } = require('../utils/utils');
 const Sprite = require('./sprite');
 const A_Star = require('../maze/solver/a_star');
 const Cell = require('../maze/cell');
+const Vector = require('../utils/vector');
 
 class Enemy extends Sprite {
     constructor(name, sprite, size, cells, endIdx) {
@@ -11,10 +12,7 @@ class Enemy extends Sprite {
         const row = Math.floor(Math.random() * this.cellCount);
         const col = Math.floor(Math.random() * this.cellCount);
 
-        this.position = {
-            x: col * size.w + this.sprite.width / 2,
-            y: row * size.h + this.sprite.height / 2
-        }
+        this.position = new Vector(col * size.w + this.sprite.width / 2, row * size.h + this.sprite.height / 2);
 
         // let solverCells = cells.map(cell => new Cell(cell.row, cell.col, cell.size));
         let startIdx = index(row, col, this.cellCount);
@@ -52,7 +50,7 @@ class Enemy extends Sprite {
         // this.solver.initialTime = Date.now();
 
         // this.solver.updateSolver(start, end);
-        // console.log(this.name, this.solver.path);
+        // console.log(this.name, this.solver, this.solver.path);
         this.solver.updateSolver(index(row, col, this.cellCount), endIdx);
     }
 
