@@ -24,7 +24,7 @@ class A_Star {
     }
 
     createNodes() {
-        this.cells.forEach(cell => cell.node = Object.assign(Object.create(Object.getPrototypeOf(cell.node)), cell.node));
+        this.cells.forEach(cell => cell.node = Object.assign({}, Object.create(Object.getPrototypeOf(cell.node)), cell.node));
     }
 
     // updateSolver(end) {
@@ -47,7 +47,6 @@ class A_Star {
             // cell.node.position = Object.assign(cell.node.position);
         });
         // console.log(this.path, '-------------')
-        // this.createNodes();
 
         // this.enemy.updateSolver(end);
         // this.start = startIdx;
@@ -112,6 +111,7 @@ class A_Star {
                 .map(obj => Object.values(obj)[0]);
             neighbors.forEach(neighbor => {
                 if (!neighbor.node.visited) {
+                    // if (!this.closedSet.includes(neighbor)) {
                     const tentativeG = current.node.g + 1;
                     let newPath = false;
                     if (this.openSet.includes(neighbor) && tentativeG < neighbor.node.g) {

@@ -30,20 +30,19 @@ class Game {
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = this.grid.cells[index(row, col, this.cellCount)];
-        this.enemy = new Enemy("enemy_1", rm.get('zombie'), this.cellSize, this.grid.cells, end);
-        this.enemy2 = new Enemy("enemy_2", rm.get('zombie'), this.cellSize, this.grid.cells, end);
 
         // window.addEventListener('mousemove', this.handleRotation.bind(this));
         // window.addEventListener('click', this.handleClick.bind(this));
-        window.setInterval(this.updateSolver.bind(this), 500);
-        // window.setInterval(this.spawnEnemy.bind(this), 5000);
-        this.zombies = [];
+        // window.setInterval(this.updateSolver.bind(this), 500);
+        window.setInterval(this.spawnEnemy.bind(this), 1000);
+        window.zombies = this.zombies = [];
 
-        for (let i = 0; i < 3; i++) this.spawnEnemy();
+        // for (let i = 0; i < 3; i++) this.spawnEnemy();
         this.initialTime = Date.now();
     }
 
     spawnEnemy() {
+        if (this.zombies.length > 5) return;
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = index(row, col, this.cellCount);
@@ -51,47 +50,24 @@ class Game {
         // let cells = this.grid.cells.map(cell => new Cell(cell.row, cell.col, cell.size));
         let cells = Array.from(this.grid.cells);
         cells.forEach((cell, idx) => {
-            // cell = Object.assign(Object.create(Object.getPrototypeOf(cell)), cell);
-            cell = new Cell(cell.row, cell.col, cell.size);
-            cells[idx] = cell;
-        })
-        this.zombies.push(new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end));
+            cells[idx] = Object.assign({}, Object.create(Object.getPrototypeOf(cell)), cell);
+            // cells[idx] = new Cell(cell.row, cell.col, cell.size);
+        });
+        let zombie = new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end)
+        this.zombies.push(zombie);
+        window.setInterval(this.updateSolver.bind(this, zombie), 1000);
     }
 
-    updateSolver() {
-        // if (this.enemy.solver.finished) return;
-        // this.grid.cells.forEach(cell => {
-        //     cell.node.f = 0;
-        //     cell.node.g = 0;
-        //     cell.node.h = 0;
-        //     cell.node.visited = false;
-        //     // cell.node.position = Object.assign(cell.node.position);
-        // });
-        // this.enemy.solver.forEach(cell => {
-        //     cell.node.f = 0;
-        //     cell.node.g = 0;
-        //     cell.node.h = 0;
-        //     cell.node.visited = false;
-        //     // cell.node.position = Object.assign(cell.node.position);
-        // });
-        // this.enemy2.solver.forEach(cell => {
-        //     cell.node.f = 0;
-        //     cell.node.g = 0;
-        //     cell.node.h = 0;
-        //     cell.node.visited = false;
-        //     // cell.node.position = Object.assign(cell.node.position);
-        // });
-        // debugger
+    updateSolver(zombie) {
+
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         // let end = this.grid.cells[index(row, col, this.cellCount)];
         // let end = this.grid.cells[index(row, col, this.cellCount)];
         let end = index(row, col, this.cellCount);
         // let end2 = this.enemy.solver.cells[index(row, col, this.cellCount)];
-        this.zombies.forEach(zombie => zombie.updateSolver(end));
-        // this.enemy.updateSolver(end);
-        // this.enemy2.updateSolver(end);
-        // this.enemy.updateSolver(index(row, col, this.cellCount));
+        // this.zombies.forEach(zombie => zombie.updateSolver(end));
+        zombie.updateSolver(end);
     }
 
     resize() {

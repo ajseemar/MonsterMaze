@@ -17,13 +17,13 @@ class Enemy extends Sprite {
         }
 
         // let solverCells = cells.map(cell => new Cell(cell.row, cell.col, cell.size));
-        let cell = cells[index(row, col, this.cellCount)];
+        let startIdx = index(row, col, this.cellCount);
         // let start = Object.assign(Object.create(Object.getPrototypeOf(cell)), cell);
         // debugger
         // cells = cells.map(cell => Object.assign(Object.create(Object.getPrototypeOf(cell)), cell));
         // debugger
         this.solver = new A_Star(
-            index(row, col, this.cellCount),
+            startIdx,
             endIdx,
             cells
         );
