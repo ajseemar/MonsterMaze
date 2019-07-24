@@ -15,17 +15,19 @@ class Boid extends Enemy {
         debugger
         // const flock = this.flock(boids);
 
-        this.applyForce(follow, flock);
+        this.applyForce(follow);
     }
 
     seek(target) {
-        if (!target) return;
+        if (!target) return new Vector();
         let desired = Vector.sub(target, this.position);
-        if (desired.getMagnitude() < 0.05) return;
+        if (desired.getMagnitude() < 0.05) return new Vector();
         desired = desired.normalize().multiply(this.maxSpeed);
         const steering = Vector.sub(desired, this.velocity);
         steering.limit(this.maxForce);
         // this.applyForce(steering);
+        // console.log(steering);
+        // if (!steering) debugger
         return steering;
     }
 
@@ -48,18 +50,21 @@ class Boid extends Enemy {
 
         // let target = null;
         let winner = Infinity;
+        // let winnerIdx = 0
 
         for (let i = 0; i < path.nodes.length - 1; i++) {
-            let a = path.nodes[i];
-            let b = path.nodes[i + 1];
+            let a = path.nodes[i].position;
+            let b = path.nodes[i + 1].position;
 
 
             let normalPoint = Vector.getNormalPoint(this.predictedPos, a, b);
 
 
 
-            if (normalPoint.x < Math.min(a.x, b.x) || normalPoint.x > Math.max(a.x, b.x)) normalPoint = b.copy();
-            else if (normalPoint.y < Math.min(a.y, b.y) || normalPoint.y > Math.max(a.y, b.y)) normalPoint = b.copy();
+            if (normalPoint.x < Math.min(a.x, b.x) || normalPoint.x > Math.max(a.x, b.x)) normalPoint = a.copy();
+            else if (normalPoint.y < Math.min(a.y, b.y) || normalPoint.y > Math.max(a.y, b.y)) normalPoint = a.copy();
+            // if (normalPoint.x < Math.min(a.position.x, b.position.x) || normalPoint.x > Math.max(a.position.x, b.position.x)) normalPoint = b.position.copy();
+            // else if (normalPoint.y < Math.min(a.position.y, b.position.y) || normalPoint.y > Math.max(a.position.y, b.position.y)) normalPoint = b.position.copy();
 
             const dist = this.predictedPos.dist(normalPoint);
             if (dist < winner) {
@@ -68,10 +73,13 @@ class Boid extends Enemy {
                 const dir = Vector.sub(b, a).normalize();
                 dir.multiply(this.perceptionRadius);
                 this.target = Vector.add(this.normal, dir);
+                if (i === path.nodes.length - 2) this.solver.path.reverse();
             }
 
         }
-        this.applyForce(this.seek(this.target));
+        const desired = this.seek(this.target);
+        if (!desired) debugger
+        this.applyForce(desired);
         // if (!this.target) return this.seek(this.position);
         // return this.seek(this.target);
     }

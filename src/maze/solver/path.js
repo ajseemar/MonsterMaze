@@ -10,6 +10,10 @@ class Path {
         this.nodes = [];
     }
 
+    reverse() {
+        this.nodes.reverse();
+    }
+
     addNode(node) {
         this.nodes.push(node);
     }

@@ -1,4 +1,6 @@
 const Game = require('./game');
+const Menu = require('./utils/splash_menu');
+
 const ResourceManager = require('./utils/resource_manager');
 
 const assets = {
@@ -35,13 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // const ctx = canvas.getContext('2d');
     rm.load(assets);
     const game = new Game(10, rm);
+    const menu = new Menu(game);
     const start = () => {
         let time = Date.now();
         let dt = (time - game.initialTime) / 1000.0;
-        game.update(dt);
-        game.render();
-        game.initialTime = time;
+        menu.update(dt);
+        // game.update(dt);
+        // game.render();
+        menu.game.initialTime = time;
         requestAnimationFrame(start);
     }
+
+
     rm.onReady(start);
 });

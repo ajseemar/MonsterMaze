@@ -125,6 +125,7 @@ class Vector {
     }
 
     static getNormalPoint(p, a, b) {
+        // debugger
         const ap = Vector.sub(p, a);
         const ab = Vector.sub(b, a);
 
