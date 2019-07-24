@@ -5,10 +5,11 @@ const Player = require('./entities/player');
 const InputManager = require('./utils/input');
 const Enemy = require('./entities/enemy');
 const Cell = require('./maze/cell');
+const Boid = require('./entities/boid');
 
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 3;
+const MAX_ENEMIES = 1;
 
 class Game {
     constructor(size, rm) {
@@ -57,9 +58,9 @@ class Game {
             cells[i] = Object.assign({}, Object.create(Object.getPrototypeOf(cell)), cell);
             // cells[i] = new Cell(cell.row, cell.col, cell.size);
         }
-        let zombie = new Enemy(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end)
+        let zombie = new Boid(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end);
         this.zombies.push(zombie);
-        window.setInterval(this.updateSolver.bind(this, zombie), 1000);
+        // window.setInterval(this.updateSolver.bind(this, zombie), 1000);
     }
 
     updateSolver(zombie) {
@@ -187,7 +188,12 @@ class Game {
         }
         // this.enemy.update();
         this.zombies.forEach(zombie => {
-            zombie.update();
+            zombie.solver.update();
+            if (zombie.solver.finished) {
+                zombie.follow(zombie.solver.path);
+                zombie.update();
+            }
+            // zombie.applyBehaviors(zombie.solver.path, this.zombies);
             // zombie.solver.update();
             // this.updateSolver(zombie);
         });
@@ -204,7 +210,8 @@ class Game {
         // this.enemy.render(this.ctx);
         // this.enemy2.render(this.ctx);
         this.zombies.forEach(zombie => {
-            zombie.render(this.ctx);
+            if (zombie.solver.finished)
+                zombie.render(this.ctx);
         });
     }
 }

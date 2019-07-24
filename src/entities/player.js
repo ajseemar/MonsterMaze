@@ -9,7 +9,8 @@ class Player extends Sprite {
         // this.size = size / 3;
         // this.radius = this.size * 3 / 2;
 
-        this.position = new Vector(this.sprite.width - this.sprite.width / 2, this.sprite.height - this.sprite.height / 2);
+        this.position.x = this.sprite.width - this.sprite.width / 2;
+        this.position.y = this.sprite.height - this.sprite.height / 2;
 
         this.speed = 250;
 
@@ -105,8 +106,9 @@ class Player extends Sprite {
 
     update(dt, collisionDetector) {
         this.handleInput();
-        this.position.x += this.velocity.x * dt;
-        this.position.y += this.velocity.y * dt;
+        // this.position.x += this.velocity.x * dt;
+        // this.position.y += this.velocity.y * dt;
+        this.position.add(this.velocity.multiply(dt));
         // console.log(this.velocity);
 
         // Bullet.update(this.bullets, collisionDetector, dt);

@@ -12,7 +12,9 @@ class Enemy extends Sprite {
         const row = Math.floor(Math.random() * this.cellCount);
         const col = Math.floor(Math.random() * this.cellCount);
 
-        this.position = new Vector(col * size.w + this.sprite.width / 2, row * size.h + this.sprite.height / 2);
+        // this.position = new Vector(col * size.w + this.sprite.width / 2, row * size.h + this.sprite.height / 2);
+        this.position.x = col * size.w + this.sprite.width / 2;
+        this.position.y = row * size.h + this.sprite.height / 2;
 
         // let solverCells = cells.map(cell => new Cell(cell.row, cell.col, cell.size));
         let startIdx = index(row, col, this.cellCount);

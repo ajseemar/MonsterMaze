@@ -58,6 +58,7 @@ class Vector {
     add(vector) {
         // return new Vector(this.x + vector.x, this.y + vector.y);
         // debugger
+        if (!vector) debugger;
         this.x += vector.x;
         this.y += vector.y;
         return this;

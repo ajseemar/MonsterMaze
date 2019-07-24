@@ -12,6 +12,8 @@ class Sprite extends Entity {
         // console.log(this.sprite.width, this.sprite.height);
     }
 
+    handleRotation() { }
+
     resize(size) {
         this.aspectRatio = size.h / size.w * 0.75;
         // console.log(this.sprite);
