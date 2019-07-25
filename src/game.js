@@ -9,7 +9,7 @@ const Boid = require('./entities/boid');
 
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 5;
+const MAX_ENEMIES = 3;
 
 class Game {
     constructor(size, rm) {
@@ -37,7 +37,7 @@ class Game {
 
         // window.addEventListener('mousemove', this.handleRotation.bind(this));
         // window.addEventListener('click', this.handleClick.bind(this));
-        window.setInterval(this.updateSolver.bind(this), 500);
+        // window.setInterval(this.updateSolver.bind(this), 500);
         window.setInterval(this.spawnEnemy.bind(this), 1000);
         window.zombies = this.zombies = [];
 
@@ -60,7 +60,7 @@ class Game {
         }
         let zombie = new Boid(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end);
         this.zombies.push(zombie);
-        // window.setInterval(this.updateSolver.bind(this, zombie), 1000);
+        window.setInterval(this.updateSolver.bind(this, zombie), 1000);
     }
 
     updateSolver(zombie) {
@@ -73,8 +73,8 @@ class Game {
         // console.log(row, col);
         let end = index(row, col, this.cellCount);
         // let end2 = this.enemy.solver.cells[index(row, col, this.cellCount)];
-        this.zombies.forEach(zombie => zombie.updateSolver(end));
-        // zombie.updateSolver(end);
+        // this.zombies.forEach(zombie => zombie.updateSolver(end));
+        zombie.updateSolver(end);
     }
 
     resize() {

@@ -1,18 +1,19 @@
 const Vector = require('../../utils/vector');
 
 class Node {
-    constructor(i, j, size) {
+    constructor(i, j, size, neighbors, walls) {
         this.i = i;
         this.j = j;
         this.position = new Vector((j * size.w) + (size.w / 2), (i * size.h) + (size.h / 2));
 
         // fix to empty
-        this.neighbors = {
+        this.neighbors = neighbors || {
             // "north": Infinity,
             // "east": Infinity,
             // "south": Infinity,
             // "west": Infinity
         };
+        this.walls = walls || {};
         this.size = size;
         this.radius = 2;
         this.visited = false;

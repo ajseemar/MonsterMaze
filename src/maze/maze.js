@@ -41,26 +41,26 @@ class Maze {
                     case "north":
                         delete currentCell.walls["north"];
                         delete neighbor.walls["south"];
-                        currentCell.node.neighbors["north"] = 1;
-                        neighbor.node.neighbors["south"] = 1;
+                        currentCell.node.walls["north"] = 1;
+                        neighbor.node.walls["south"] = 1;
                         break;
                     case "east":
                         delete currentCell.walls["east"];
                         delete neighbor.walls["west"];
-                        currentCell.node.neighbors["east"] = 1;
-                        neighbor.node.neighbors["west"] = 1;
+                        currentCell.node.walls["east"] = 1;
+                        neighbor.node.walls["west"] = 1;
                         break;
                     case "south":
                         delete currentCell.walls["south"];
                         delete neighbor.walls["north"];
-                        currentCell.node.neighbors["south"] = 1;
-                        neighbor.node.neighbors["north"] = 1;
+                        currentCell.node.walls["south"] = 1;
+                        neighbor.node.walls["north"] = 1;
                         break;
                     case "west":
                         delete currentCell.walls["west"];
                         delete neighbor.walls["east"];
-                        currentCell.node.neighbors["west"] = 1;
-                        neighbor.node.neighbors["east"] = 1;
+                        currentCell.node.walls["west"] = 1;
+                        neighbor.node.walls["east"] = 1;
                         break;
                 }
                 stack.push(neighbor);

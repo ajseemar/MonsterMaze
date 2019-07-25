@@ -5,12 +5,15 @@ const Node = require('./node');
 class A_Star {
     constructor(start, end, cells) {
         this.cells = cells;
+        this.nodes = this.cells.map(cell => new Node(cell.row, cell.col, cell.size, cell.neighbors, cell.node.walls));
         // this.cells.forEach(cell => cell.node = Object.assign({}, cell.node));
         // this.createNodes();
         this.cellCount = Math.sqrt(cells.length);
         // this.nodes = nodes;
         // this.start = start;
         // this.end = end;
+        // this.start = this.nodes[start];
+        // this.end = this.nodes[end];
         this.start = cells[start];
         this.end = cells[end];
         // console.log(this.start, this.end);
@@ -47,6 +50,13 @@ class A_Star {
             cell.node.parent = null;
             // cell.node.position = Object.assign(cell.node.position);
         });
+        // this.nodes.forEach(node => {
+        //     node.f = 0;
+        //     node.g = 0;
+        //     node.h = 0;
+        //     node.visited = false;
+        //     node.parent = null;
+        // });
         // console.log(this.path, '-------------')
 
         // this.enemy.updateSolver(end);
@@ -54,6 +64,8 @@ class A_Star {
         // this.end = endIdx;
         this.start = this.cells[startIdx];
         this.end = this.cells[endIdx];
+        // this.start = this.nodes[startIdx];
+        // this.end = this.nodes[endIdx];
         // console.log(this.start, this.end);
         this.openSet.push(this.start);
         this.closedSet = [];
@@ -78,6 +90,10 @@ class A_Star {
         if (this.openSet.length > 0) {
             // console.log(this.openSet);
             let winner = 0;
+            // this.openSet.forEach((node, idx) => {
+            //     if (!node) { console.log(this.openSet) }
+            //     if (node.f < this.openSet[winner].f) winner = idx;
+            // });
             this.openSet.forEach((cell, idx) => {
                 if (!cell) { console.log(this.openSet) }
                 if (cell.node.f < this.openSet[winner].node.f) winner = idx;
@@ -86,6 +102,7 @@ class A_Star {
 
             this.path.clear();
             let temp = current.node;
+            // let temp = current;
             this.path.addNode(temp);
             while (temp.parent) {
                 this.path.addNode(temp.parent);
@@ -97,6 +114,7 @@ class A_Star {
                 // this.path.clear();
                 this.path.clear();
                 let temp = current.node;
+                // let temp = current;
                 this.path.addNode(temp);
                 while (temp.parent) {
                     this.path.addNode(temp.parent);
@@ -117,6 +135,10 @@ class A_Star {
             // add current to closed set 
             // const neighbors = current.neighbors.filter(obj => !Object.keys(current.walls)
             //     .includes(Object.keys(obj)[0]))
+            // debugger
+            // const neighbors = current.neighbors.filter(obj => Object.keys(current.node.neighbors)
+            //     .includes(Object.keys(obj)[0]))
+            //     .map(obj => Object.values(obj)[0]);
             const neighbors = current.neighbors.filter(obj => Object.keys(current.node.neighbors)
                 .includes(Object.keys(obj)[0]))
                 .map(obj => Object.values(obj)[0]);
