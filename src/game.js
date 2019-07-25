@@ -37,16 +37,9 @@ class Game {
 
         this.viewport = new Camera(this.width, this.height, size, this.cellSize.w);
 
-        // let row = Math.floor(this.maze.height / this.player.position.y);
-        // let col = Math.floor(this.maze.width / this.player.position.x);
-
-        // let row = Math.floor(this.player.position.y / this.player.size.h);
-        // let col = Math.floor(this.player.position.x / this.player.size.w);
-        // let end = this.grid.cells[index(row, col, this.cellCount)];
-
         window.addEventListener('mousemove', this.handleRotation.bind(this));
         window.addEventListener('click', this.handleClick.bind(this));
-        // window.setInterval(this.updateSolver.bind(this), 500);
+
         window.setInterval(this.spawnEnemy.bind(this), 1000);
         window.zombies = this.zombies = [];
 
@@ -59,6 +52,7 @@ class Game {
     initPlayer() {
         this.player.sprite = this.rm.get('player_standing');
         this.player.bulletSprite = this.rm.get('bullet');
+        // Object.values(this.player.bullets).forEach(bullet => bullet.sprite = this.player.bulletSprite);
         // debugger
     }
 

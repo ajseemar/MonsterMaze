@@ -3,6 +3,44 @@ const Sprite = require('./sprite');
 const Bullet = require('./bullet');
 const Vector = require('../utils/vector');
 
+Function.prototype.throttle = function (interval) {
+    // declare a variable outside of the returned function
+    let tooSoon = false;
+    return (...args) => {
+        // the function only gets invoked if tooSoon is false
+        // it sets tooSoon to true, and uses setTimeout to set it back to
+        // false after interval ms
+        // any invocation within this interval will skip the if 
+        // statement and do nothing
+        if (!tooSoon) {
+            tooSoon = true;
+            setTimeout(() => tooSoon = false, interval);
+            this(...args);
+        }
+    }
+}
+
+
+Function.prototype.debounce = function (interval) {
+    // declare a variable outside of the returned function
+    let timeout;
+    // return a function that takes an arbitrary number of arguments
+    return (...args) => {
+        // declare a function that sets timeout to null and invokes this with args
+        const fnCall = () => {
+            timeout = null;
+            this(...args);
+        }
+        // each time this function is called, it will clear the previous timeout
+        // and create a new one that invokes fnCall after the interval has passed
+        // since the timeout is reset every time the function is invoked, 
+        // fnCall will only be called once the interval has passed without any new 
+        // invocations
+        clearTimeout(timeout);
+        timeout = setTimeout(fnCall, interval);
+    }
+}
+
 class Player extends Sprite {
     constructor(sprite, cellSize, inputHandler) {
         super(sprite, cellSize);
@@ -13,7 +51,6 @@ class Player extends Sprite {
         // this.position.y = this.sprite.height - this.sprite.height / 2;
         this.position.x = cellSize.w / 2;
         this.position.y = cellSize.h / 2;
-        console.log(this.sprite.width, this.sprite.height);
 
         this.speed = 250;
 
@@ -33,30 +70,33 @@ class Player extends Sprite {
         //     }
         // }
 
-        const throttle = (func, limit) => {
-            let lastFunc
-            let lastRan
-            return function () {
-                const context = this
-                const args = arguments
-                if (!lastRan) {
-                    func.apply(context, args)
-                    lastRan = Date.now()
-                } else {
-                    clearTimeout(lastFunc)
-                    lastFunc = setTimeout(function () {
-                        if ((Date.now() - lastRan) >= limit) {
-                            func.apply(context, args)
-                            lastRan = Date.now()
-                        }
-                    }, limit - (Date.now() - lastRan))
-                }
-            }
-        }
+        // const throttle = (func, limit) => {
+        //     let lastFunc
+        //     let lastRan
+        //     return function () {
+        //         const context = this
+        //         const args = arguments
+        //         if (!lastRan) {
+        //             func.apply(context, args)
+        //             lastRan = Date.now()
+        //         } else {
+        //             clearTimeout(lastFunc)
+        //             lastFunc = setTimeout(function () {
+        //                 if ((Date.now() - lastRan) >= limit) {
+        //                     func.apply(context, args)
+        //                     lastRan = Date.now()
+        //                 }
+        //             }, limit - (Date.now() - lastRan))
+        //         }
+        //     }
+        // }
 
         // // this.shoot = debounce(this.shoot, 10);
-        this.shoot = throttle(this.shoot, 100);
+        // this.shoot = throttle(this.shoot.bind(this), 100);
         // document.addEventListener('mousemove', this.handleRotation.bind(this));
+        this.shoot = this.shoot.throttle(100);
+        // this.shoot = this.shoot.debounce(100);
+        this.bullets = {};
     }
 
     handleRotation(delta, origin) {
@@ -91,7 +131,8 @@ class Player extends Sprite {
     }
 
     shoot(delta) {
-        const bullet = new Bullet(this.bulletSprite, this.position);
+        debugger
+        const bullet = new Bullet(this.bulletSprite, this.position, this.size);
         let x, y;
         if (navigator.getGamepads()[0]) {
             x = this.delta.x;
@@ -106,7 +147,9 @@ class Player extends Sprite {
         y /= magnitude;
 
         bullet.updateVelocity(x, y);
+        // if (!bullet.sprite) return;
         this.bullets[bullet.id] = bullet;
+        // console.log(this.bullets);
     }
 
     update(dt, collisionDetector) {
@@ -116,7 +159,7 @@ class Player extends Sprite {
         this.position.add(this.velocity.multiply(dt));
         // console.log(this.velocity);
 
-        // Bullet.update(this.bullets, collisionDetector, dt);
+        Bullet.update(this.bullets, collisionDetector, dt);
     }
 
     render(ctx, offset) {
@@ -129,7 +172,7 @@ class Player extends Sprite {
         ctx.fillRect(-5, -5, 10, 10);
         ctx.restore();
 
-        // Bullet.render(this.bullets, ctx, offset);
+        Bullet.render(this.bullets, ctx, offset);
 
     }
 }

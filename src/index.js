@@ -35,7 +35,7 @@ var game, menu;
 const initGame = () => {
     game = new Game(20, rm);
     menu = new Menu(game);
-}
+};
 
 document.addEventListener("DOMContentLoaded", () => {
     // const canvas = document.getElementById('canvas');
