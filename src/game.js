@@ -9,7 +9,7 @@ const Boid = require('./entities/boid');
 
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 10;
+const MAX_ENEMIES = 20;
 
 class Game {
     constructor(size, rm) {

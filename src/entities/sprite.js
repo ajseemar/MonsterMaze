@@ -9,7 +9,7 @@ class Sprite extends Entity {
         // console.log(this.sprite.width, this.sprite.height);
         this.sprite.width = this.size.width / this.aspectRatio;
         this.sprite.height = this.size.height / this.aspectRatio;
-        debugger
+        // debugger
         // console.log(this.sprite.width, this.sprite.height);
     }
 

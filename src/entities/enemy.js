@@ -72,14 +72,16 @@ class Enemy extends Sprite {
         ctx.save();
         ctx.translate(this.position.x, this.position.y)
         ctx.rotate(this.angle);
-        ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
+        ctx.drawImage(this.sprite, -this.size.w / 2, -this.size.h / 2);
+        // ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
+        // debugger
         ctx.restore();
 
-        ctx.fillStyle = "#f0f";
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
+        // ctx.fillStyle = "#f0f";
+        // ctx.beginPath();
+        // ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+        // ctx.closePath();
+        // ctx.fill();
 
     //     // normal point on path relative to predicted pos
     //     // ctx.fillStyle = "#0ff";
@@ -89,11 +91,11 @@ class Enemy extends Sprite {
     //     // ctx.fill();
 
     //     // // target point on path boid aims to seek
-        ctx.fillStyle = "#fff";
-        ctx.beginPath();
-        ctx.arc(this.target.x, this.target.y, this.radius / 3, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
+        // ctx.fillStyle = "#fff";
+        // ctx.beginPath();
+        // ctx.arc(this.target.x, this.target.y, this.radius / 3, 0, 2 * Math.PI);
+        // ctx.closePath();
+        // ctx.fill();
 
         // if (this.solver.finished) this.solver.render(ctx);
         // this.solver.render(ctx);
