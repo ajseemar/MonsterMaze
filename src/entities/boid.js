@@ -18,10 +18,10 @@ class Boid extends Enemy {
         // debugger
         let arrive = new Vector();
         let follow = new Vector();
-        const separation = this.separate(boids).multiply(1.5);
-        if (this.position.dist(playerPos) < 0.05)
+        const separation = this.separate(boids).multiply(5);
+        if (this.position.dist(playerPos) < 5)
             arrive = this.arrive(playerPos).multiply(0.3);
-        else follow = this.follow(path).multiply(2);
+        else follow = this.follow(path, playerPos).multiply(2);
         this.applyForce(follow, separation, arrive);
     }
 
@@ -51,7 +51,7 @@ class Boid extends Enemy {
         return steering;
     }
 
-    follow(path) {
+    follow(path, targetPos) {
         const projection = this.velocity.normalize().multiply(this.perceptionRadius);
         this.predictedPos = Vector.add(this.position, projection);
 
@@ -81,6 +81,7 @@ class Boid extends Enemy {
                 dir.multiply(this.perceptionRadius);
                 this.target = Vector.add(this.normal, dir);
                 // if (i === path.nodes.length - 2) this.solver.path.reverse();
+                if (i === path.nodes.length - 2) return this.seek(targetPos);
             }
 
         }
@@ -98,7 +99,7 @@ class Boid extends Enemy {
         boids.forEach(boid => {
             const dist = this.position.dist(boid.position);
 
-            if (dist > 0 && dist < this.perceptionRadius * 2) {
+            if (dist > 0 && dist < this.perceptionRadius) {
                 const diff = Vector.sub(this.position, boid.position).normalize();
                 sum.add(diff);
                 count++;

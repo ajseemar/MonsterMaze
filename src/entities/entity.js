@@ -23,6 +23,6 @@ class Entity {
             this.acceleration.add(force);
         });
     }
-}
+    } 
 
-module.exports = Entity;
+            module.exports = Entity;

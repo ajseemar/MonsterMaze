@@ -21,6 +21,8 @@ class Sprite extends Entity {
         // console.log(this.sprite.width, this.sprite.height);
         this.sprite.width = this.size.width / this.aspectRatio;
         this.sprite.height = this.size.height / this.aspectRatio;
+
+        this.radius = size.w > size.h ? size.h / 2.5 : size.w / 2.5;
     }
 }
 
