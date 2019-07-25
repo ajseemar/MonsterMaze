@@ -1,5 +1,6 @@
 const Enemy = require('./enemy');
 const Vector = require('../utils/vector');
+const { map } = require('../utils/utils');
 
 class Boid extends Enemy {
     constructor(name, sprite, size, cells, endIdx) {
@@ -9,13 +10,19 @@ class Boid extends Enemy {
         // this.target = this.position;
     }
 
-    applyBehaviors(path, boids) {
-        const follow = this.follow(path);
-        const flock = new Vector();
-        debugger
+    applyBehaviors(path, boids, playerPos) {
+        // const follow = this.follow(path).multiply(2);
+        // const flock = new Vector();
+        // debugger
         // const flock = this.flock(boids);
-
-        this.applyForce(follow);
+        // debugger
+        let arrive = new Vector();
+        let follow = new Vector();
+        const separation = this.separate(boids).multiply(1.5);
+        if (this.position.dist(playerPos) < 0.05)
+            arrive = this.arrive(playerPos).multiply(0.3);
+        else follow = this.follow(path).multiply(2);
+        this.applyForce(follow, separation, arrive);
     }
 
     seek(target) {
@@ -73,15 +80,16 @@ class Boid extends Enemy {
                 const dir = Vector.sub(b, a).normalize();
                 dir.multiply(this.perceptionRadius);
                 this.target = Vector.add(this.normal, dir);
-                if (i === path.nodes.length - 2) this.solver.path.reverse();
+                // if (i === path.nodes.length - 2) this.solver.path.reverse();
             }
 
         }
         const desired = this.seek(this.target);
         if (!desired) debugger
-        this.applyForce(desired);
-        // if (!this.target) return this.seek(this.position);
-        // return this.seek(this.target);
+        // return desired;
+        // this.applyForce(desired);
+        if (!this.target) return this.seek(this.position);
+        return this.seek(this.target);
     }
 
     separate(boids) {

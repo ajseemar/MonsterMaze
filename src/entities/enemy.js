@@ -75,8 +75,28 @@ class Enemy extends Sprite {
         ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         ctx.restore();
 
+        ctx.fillStyle = "#f0f";
+        ctx.beginPath();
+        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
+
+    //     // normal point on path relative to predicted pos
+    //     // ctx.fillStyle = "#0ff";
+    //     // ctx.beginPath();
+    //     // ctx.arc(this.normal.x, this.normal.y, this.radius / 3, 0, 2 * Math.PI);
+    //     // ctx.closePath();
+    //     // ctx.fill();
+
+    //     // // target point on path boid aims to seek
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(this.target.x, this.target.y, this.radius / 3, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
+
         // if (this.solver.finished) this.solver.render(ctx);
-        this.solver.render(ctx);
+        // this.solver.render(ctx);
     }
 }
 

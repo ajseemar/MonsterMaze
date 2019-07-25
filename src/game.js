@@ -9,7 +9,7 @@ const Boid = require('./entities/boid');
 
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 3;
+const MAX_ENEMIES = 10;
 
 class Game {
     constructor(size, rm) {
@@ -59,8 +59,8 @@ class Game {
             // cells[i] = new Cell(cell.row, cell.col, cell.size);
         }
         let zombie = new Boid(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end);
-        this.zombies.push(zombie);
         window.setInterval(this.updateSolver.bind(this, zombie), 1000);
+        this.zombies.push(zombie);
     }
 
     updateSolver(zombie) {
@@ -190,7 +190,8 @@ class Game {
         this.zombies.forEach(zombie => {
             zombie.solver.update();
             // if (zombie.solver.finished) {
-            zombie.follow(zombie.solver.path);
+            // zombie.follow(zombie.solver.path);
+            zombie.applyBehaviors(zombie.solver.path, this.zombies, this.player.position);
             // debugger
             zombie.update();
             // }

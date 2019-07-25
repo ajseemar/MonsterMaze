@@ -15,7 +15,7 @@ class Path {
     }
 
     addNode(node) {
-        this.nodes.push(node);
+        this.nodes.unshift(node);
     }
 
     getStart() {
