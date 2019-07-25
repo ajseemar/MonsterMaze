@@ -77,11 +77,11 @@ class Enemy extends Sprite {
         // debugger
         ctx.restore();
 
-        ctx.fillStyle = "#f0f";
-        ctx.beginPath();
-        ctx.arc(this.position.x + offset.x, this.position.y + offset.y, this.radius, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
+        // ctx.fillStyle = "#f0f";
+        // ctx.beginPath();
+        // ctx.arc(this.position.x + offset.x, this.position.y + offset.y, this.radius, 0, 2 * Math.PI);
+        // ctx.closePath();
+        // ctx.fill();
 
     //     // normal point on path relative to predicted pos
     //     // ctx.fillStyle = "#0ff";

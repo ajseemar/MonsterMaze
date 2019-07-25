@@ -89,8 +89,8 @@ class Game {
         this.width = this.canvas.width;
         this.height = this.canvas.height;
         this.cellSize = {
-            w: 100,
-            h: 100
+            w: 150,
+            h: 150
             // w: this.width / this.cellCount,
             // h: this.height / this.cellCount
         };
