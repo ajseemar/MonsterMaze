@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // const canvas = document.getElementById('canvas');
     // const ctx = canvas.getContext('2d');
     rm.load(assets);
-    const game = new Game(20, rm);
+    const game = new Game(25, rm);
     const menu = new Menu(game);
     const start = () => {
         let time = Date.now();
