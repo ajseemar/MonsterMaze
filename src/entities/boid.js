@@ -165,6 +165,8 @@ class Boid extends Enemy {
     // }
 
     update(dt) {
+        this.handleRotation();
+
         this.velocity.add(this.acceleration);
         this.velocity.limit(this.maxSpeed);
         this.position.add(this.velocity);
@@ -176,37 +178,37 @@ class Boid extends Enemy {
         // this.checkBounds();
     }
 
-    render(ctx) {
-        // predicted position
-        ctx.fillStyle = "#f00";
-        ctx.beginPath();
-        ctx.arc(this.predictedPos.x, this.predictedPos.y, this.radius / 3, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
+    // render(ctx) {
+    //     // predicted position
+    //     // ctx.fillStyle = "#f00";
+    //     // ctx.beginPath();
+    //     // ctx.arc(this.predictedPos.x, this.predictedPos.y, this.radius / 3, 0, 2 * Math.PI);
+    //     // ctx.closePath();
+    //     // ctx.fill();
 
-        // boid
-        ctx.fillStyle = "#f0f";
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
+    //     // boid
+    //     ctx.fillStyle = "#f0f";
+    //     ctx.beginPath();
+    //     ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+    //     ctx.closePath();
+    //     ctx.fill();
 
-        // normal point on path relative to predicted pos
-        ctx.fillStyle = "#0ff";
-        ctx.beginPath();
-        ctx.arc(this.normal.x, this.normal.y, this.radius / 3, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
+    //     // normal point on path relative to predicted pos
+    //     // ctx.fillStyle = "#0ff";
+    //     // ctx.beginPath();
+    //     // ctx.arc(this.normal.x, this.normal.y, this.radius / 3, 0, 2 * Math.PI);
+    //     // ctx.closePath();
+    //     // ctx.fill();
 
-        // target point on path boid aims to seek
-        ctx.fillStyle = "#fff";
-        ctx.beginPath();
-        ctx.arc(this.target.x, this.target.y, this.radius / 3, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
+    //     // // target point on path boid aims to seek
+    //     // ctx.fillStyle = "#fff";
+    //     // ctx.beginPath();
+    //     // ctx.arc(this.target.x, this.target.y, this.radius / 3, 0, 2 * Math.PI);
+    //     // ctx.closePath();
+    //     // ctx.fill();
 
-        this.solver.render(ctx);
-    }
+    //     this.solver.render(ctx);
+    // }
 }
 
 module.exports = Boid;

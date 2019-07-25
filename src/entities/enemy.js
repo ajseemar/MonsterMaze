@@ -56,7 +56,15 @@ class Enemy extends Sprite {
         this.solver.updateSolver(index(row, col, this.cellCount), endIdx);
     }
 
+    handleRotation() {
+        // console.log('rotate');
+        if (!this.target) return;
+        const diff = Vector.sub(this.target, this.position);
+        this.angle = diff.getDirection();
+    }
+
     update() {
+        this.handleRotation();
         this.solver.update();
     }
 
