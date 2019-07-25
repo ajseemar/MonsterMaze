@@ -6,10 +6,11 @@ const InputManager = require('./utils/input');
 const Enemy = require('./entities/enemy');
 const Cell = require('./maze/cell');
 const Boid = require('./entities/boid');
+const Camera = require('./entities/camera');
 
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 30;
+const MAX_ENEMIES = 50;
 
 class Game {
     constructor(size, rm) {
@@ -27,6 +28,8 @@ class Game {
 
         this.ih = new InputManager();
         window.player = this.player = new Player(rm.get('player_standing'), this.cellSize, this.ih);
+
+        this.viewport = new Camera(this.width, this.height, size, this.cellSize.w);
 
         // let row = Math.floor(this.maze.height / this.player.position.y);
         // let col = Math.floor(this.maze.width / this.player.position.x);
@@ -91,6 +94,10 @@ class Game {
             // w: this.width / this.cellCount,
             // h: this.height / this.cellCount
         };
+        if (this.viewport) {
+            this.viewport.screen.x = this.width;
+            this.viewport.screen.y = this.height;
+        }
         if (this.grid) {
             this.grid.cells.forEach(cell => {
                 cell.size = this.cellSize;
@@ -203,19 +210,24 @@ class Game {
         });
         // this.enemy2.update();
         this.player.update(dt);
+
+        this.viewport.update(this.player.position.x, this.player.position.y);
     }
 
     render() {
         this.ctx.fillStyle = "#000";
         this.ctx.fillRect(0, 0, this.width, this.height);
-        this.maze.render(this.ctx);
+
+        // this.maze.render(this.ctx);
+
+        this.viewport.render(this.ctx, this.maze.grid.cells);
         // this.solver.render(this.ctx);
-        this.player.render(this.ctx, { x: 0, y: 0 });
+        this.player.render(this.ctx, this.viewport.offset);
         // this.enemy.render(this.ctx);
         // this.enemy2.render(this.ctx);
         this.zombies.forEach(zombie => {
             // if (zombie.solver.finished)
-            zombie.render(this.ctx);
+            zombie.render(this.ctx, this.viewport.offset);
         });
     }
 }

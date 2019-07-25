@@ -68,9 +68,9 @@ class Enemy extends Sprite {
         this.solver.update();
     }
 
-    render(ctx, offsetX, offsetY) {
+    render(ctx, offset) {
         ctx.save();
-        ctx.translate(this.position.x, this.position.y)
+        ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
         ctx.rotate(this.angle);
         ctx.drawImage(this.sprite, -this.radius, -this.radius);
         // ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
@@ -79,7 +79,7 @@ class Enemy extends Sprite {
 
         ctx.fillStyle = "#f0f";
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+        ctx.arc(this.position.x + offset.x, this.position.y + offset.y, this.radius, 0, 2 * Math.PI);
         ctx.closePath();
         ctx.fill();
 

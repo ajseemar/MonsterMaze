@@ -119,7 +119,8 @@ class Player extends Sprite {
         ctx.save();
         ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
         ctx.rotate(this.angle * Math.PI / 180);
-        ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
+        ctx.drawImage(this.sprite, 0, 0);
+        // debugger
         ctx.restore();
 
         // Bullet.render(this.bullets, ctx, offset);
