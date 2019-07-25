@@ -81,6 +81,8 @@ class Boid extends Enemy {
                 dir.multiply(this.perceptionRadius);
                 this.target = Vector.add(this.normal, dir);
                 // if (i === path.nodes.length - 2) this.solver.path.reverse();
+
+                // need to refine this check to make sure targetPos only becomes target if boid's position is a certain distance away from the last node
                 if (i === path.nodes.length - 2) this.target = targetPos;
             }
 

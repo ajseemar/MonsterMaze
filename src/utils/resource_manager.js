@@ -23,6 +23,7 @@ class ResourceManager {
             }
             img.src = url;
             this.resourceCache[key] = img;
+            // debugger
         }
     }
 

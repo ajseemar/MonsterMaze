@@ -1,6 +1,6 @@
 const KEYS = require('../utils/keys');
 const Sprite = require('./sprite');
-// const Bullet = require('./bullet');
+const Bullet = require('./bullet');
 const Vector = require('../utils/vector');
 
 class Player extends Sprite {
@@ -9,8 +9,11 @@ class Player extends Sprite {
         // this.size = size / 3;
         // this.radius = this.size * 3 / 2;
 
-        this.position.x = this.sprite.width - this.sprite.width / 2;
-        this.position.y = this.sprite.height - this.sprite.height / 2;
+        // this.position.x = this.sprite.width - this.sprite.width / 2;
+        // this.position.y = this.sprite.height - this.sprite.height / 2;
+        this.position.x = cellSize.w / 2;
+        this.position.y = cellSize.h / 2;
+        console.log(this.sprite.width, this.sprite.height);
 
         this.speed = 250;
 
@@ -30,40 +33,42 @@ class Player extends Sprite {
         //     }
         // }
 
-        // const throttle = (func, limit) => {
-        //     let lastFunc
-        //     let lastRan
-        //     return function () {
-        //         const context = this
-        //         const args = arguments
-        //         if (!lastRan) {
-        //             func.apply(context, args)
-        //             lastRan = Date.now()
-        //         } else {
-        //             clearTimeout(lastFunc)
-        //             lastFunc = setTimeout(function () {
-        //                 if ((Date.now() - lastRan) >= limit) {
-        //                     func.apply(context, args)
-        //                     lastRan = Date.now()
-        //                 }
-        //             }, limit - (Date.now() - lastRan))
-        //         }
-        //     }
-        // }
+        const throttle = (func, limit) => {
+            let lastFunc
+            let lastRan
+            return function () {
+                const context = this
+                const args = arguments
+                if (!lastRan) {
+                    func.apply(context, args)
+                    lastRan = Date.now()
+                } else {
+                    clearTimeout(lastFunc)
+                    lastFunc = setTimeout(function () {
+                        if ((Date.now() - lastRan) >= limit) {
+                            func.apply(context, args)
+                            lastRan = Date.now()
+                        }
+                    }, limit - (Date.now() - lastRan))
+                }
+            }
+        }
 
         // // this.shoot = debounce(this.shoot, 10);
-        // this.shoot = throttle(this.shoot, 100);
+        this.shoot = throttle(this.shoot, 100);
         // document.addEventListener('mousemove', this.handleRotation.bind(this));
     }
 
-    handleRotation(delta) {
-        this.angle = Math.atan2(delta.dy, delta.dx) * 180 / Math.PI;
-        // console.log(e.clientY, e.clientX);
+    handleRotation(delta, origin) {
+        this.angle = Math.atan2(delta.y, delta.x) * 180 / Math.PI;
+
         if (this.angle < 0) {
 
             this.angle = 360 + this.angle;
 
         }
+        // const dist = Vector.sub(origin, delta);
+        // this.angle = dist.angleBetween(new Vector(1, 0));
     }
 
     handleInput() {
@@ -85,24 +90,24 @@ class Player extends Sprite {
         }
     }
 
-    // shoot(delta) {
-    //     const bullet = new Bullet(this.bulletSprite, this.position);
-    //     let x, y;
-    //     if (navigator.getGamepads()[0]) {
-    //         x = this.delta.x;
-    //         y = this.delta.y;
-    //     } else {
-    //         x = delta.x;
-    //         y = delta.y;
-    //     }
-    //     const magnitude = Math.sqrt(x * x + y * y);
+    shoot(delta) {
+        const bullet = new Bullet(this.bulletSprite, this.position);
+        let x, y;
+        if (navigator.getGamepads()[0]) {
+            x = this.delta.x;
+            y = this.delta.y;
+        } else {
+            x = delta.x;
+            y = delta.y;
+        }
+        const magnitude = Math.sqrt(x * x + y * y);
 
-    //     x /= magnitude;
-    //     y /= magnitude;
+        x /= magnitude;
+        y /= magnitude;
 
-    //     bullet.updateVelocity(x, y);
-    //     this.bullets[bullet.id] = bullet;
-    // }
+        bullet.updateVelocity(x, y);
+        this.bullets[bullet.id] = bullet;
+    }
 
     update(dt, collisionDetector) {
         this.handleInput();
@@ -119,8 +124,9 @@ class Player extends Sprite {
         ctx.save();
         ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
         ctx.rotate(this.angle * Math.PI / 180);
-        ctx.drawImage(this.sprite, 0, 0);
-        // debugger
+        ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
+        ctx.fillStyle = "#f00";
+        ctx.fillRect(-5, -5, 10, 10);
         ctx.restore();
 
         // Bullet.render(this.bullets, ctx, offset);

@@ -7,13 +7,16 @@ const Enemy = require('./entities/enemy');
 const Cell = require('./maze/cell');
 const Boid = require('./entities/boid');
 const Camera = require('./entities/camera');
-
+const Vector = require('./utils/vector');
 
 // GAME CONSTANTS
 const MAX_ENEMIES = 50;
 
 class Game {
     constructor(size, rm) {
+        this.rm = rm;
+        this.rm.onReady(this.initPlayer.bind(this));
+
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
 
@@ -22,30 +25,41 @@ class Game {
         window.addEventListener('orientationchange', this.resize.bind(this), false);
         this.resize();
 
-        this.rm = rm;
+        this.ih = new InputManager();
+
+        window.player = this.player = new Player(this.rm.get('player_standing'), this.cellSize, this.ih);
+
+
+
         this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);
         this.maze = new Maze(this.cellCount, this.cellSize, this.width, this.height, this.grid);
 
-        this.ih = new InputManager();
-        window.player = this.player = new Player(rm.get('player_standing'), this.cellSize, this.ih);
 
         this.viewport = new Camera(this.width, this.height, size, this.cellSize.w);
 
         // let row = Math.floor(this.maze.height / this.player.position.y);
         // let col = Math.floor(this.maze.width / this.player.position.x);
 
-        let row = Math.floor(this.player.position.y / this.player.size.h);
-        let col = Math.floor(this.player.position.x / this.player.size.w);
-        let end = this.grid.cells[index(row, col, this.cellCount)];
+        // let row = Math.floor(this.player.position.y / this.player.size.h);
+        // let col = Math.floor(this.player.position.x / this.player.size.w);
+        // let end = this.grid.cells[index(row, col, this.cellCount)];
 
-        // window.addEventListener('mousemove', this.handleRotation.bind(this));
-        // window.addEventListener('click', this.handleClick.bind(this));
+        window.addEventListener('mousemove', this.handleRotation.bind(this));
+        window.addEventListener('click', this.handleClick.bind(this));
         // window.setInterval(this.updateSolver.bind(this), 500);
         window.setInterval(this.spawnEnemy.bind(this), 1000);
         window.zombies = this.zombies = [];
 
+        this.mousePos = new Vector();
+
         // for (let i = 0; i < 3; i++) this.spawnEnemy();
         this.initialTime = Date.now();
+    }
+
+    initPlayer() {
+        this.player.sprite = this.rm.get('player_standing');
+        this.player.bulletSprite = this.rm.get('bullet');
+        // debugger
     }
 
     spawnEnemy() {
@@ -104,7 +118,7 @@ class Game {
                 cell.resize();
             });
         }
-        if (this.player) this.player.sprite.resize(this.cellSize);
+        // if (this.player) this.player.sprite.resize(this.cellSize);
         if (this.zombies && this.zombies.length > 0) {
             this.zombies.forEach(zombie => zombie.resize(this.cellSize));
         }
@@ -139,17 +153,26 @@ class Game {
         // this.canvas.height = innerHeight;
     }
 
-    handleRotation(e) {
-        // e.preventDefault();
-        const delta = {
-            dx: e.clientX,
-            dy: e.clientY
+    getMousePosition(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const mousePos = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
         };
-        this.player.handleRotation(delta);
+
+        const dy = mousePos.y - this.canvas.height / 2;
+        const dx = mousePos.x - this.canvas.width / 2;
+
+        return { x: dx, y: dy };
     }
 
     handleClick(e) {
+        e.preventDefault();
+        this.player.shoot(this.getMousePosition(e));
+    }
 
+    handleRotation(e) {
+        this.mousePos = this.getMousePosition(e);
     }
 
     // spawnEnemy() {
@@ -193,7 +216,7 @@ class Game {
         // this.solver.update();
         if (!this.updateGamepad()) {
             this.player.handleInput();
-            // this.player.handleRotation(this.mousePos);
+            this.player.handleRotation(this.mousePos);
         }
         // this.enemy.update();
         this.zombies.forEach(zombie => {
@@ -229,6 +252,12 @@ class Game {
             // if (zombie.solver.finished)
             zombie.render(this.ctx, this.viewport.offset);
         });
+
+        // debug info mouse pos rotation angle
+        this.ctx.fillStyle = "#fff";
+        // this.ctx.fillText(`mouseX: ${this.mousePos.x}`, 0, 10);
+        // this.ctx.fillText(`mouseY: ${this.mousePos.y}`, 0, 20);
+        // this.ctx.fillText(`player_angle: ${this.player.angle}`, 0, 30);
     }
 }
 

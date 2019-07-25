@@ -72,7 +72,7 @@ class Enemy extends Sprite {
         ctx.save();
         ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
         ctx.rotate(this.angle);
-        ctx.drawImage(this.sprite, -this.radius, -this.radius);
+        ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         // ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         // debugger
         ctx.restore();

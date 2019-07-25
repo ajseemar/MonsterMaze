@@ -31,13 +31,17 @@ const assets = {
 };
 
 var rm = new ResourceManager();
+var game, menu;
+const initGame = () => {
+    game = new Game(20, rm);
+    menu = new Menu(game);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     // const canvas = document.getElementById('canvas');
     // const ctx = canvas.getContext('2d');
     rm.load(assets);
-    const game = new Game(25, rm);
-    const menu = new Menu(game);
+
     const start = () => {
         let time = Date.now();
         let dt = (time - game.initialTime) / 1000.0;
@@ -48,6 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(start);
     }
 
-
+    rm.onReady(initGame);
     rm.onReady(start);
 });
