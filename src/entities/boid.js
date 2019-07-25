@@ -5,7 +5,7 @@ const { map } = require('../utils/utils');
 class Boid extends Enemy {
     constructor(name, sprite, size, cells, endIdx) {
         super(name, sprite, size, cells, endIdx);
-        this.radius = size.w > size.h ? size.h / 5 : size.w / 5;
+        // this.radius = size.w > size.h ? size.h / 5 : size.w / 5;
         this.perceptionRadius = this.radius * 2;
         // this.target = this.position;
     }
@@ -95,20 +95,20 @@ class Boid extends Enemy {
         return this.seek(this.target);
     }
 
-        separate(boids) {
+    separate(boids) {
         const sum = new Vector();
         let count = 0;
-            boids.forEach(boid => {
+        boids.forEach(boid => {
             const dist = this.position.dist(boid.position);
 
-                if (dist > 0 && dist < this.perceptionRadius) {
+            if (dist > 0 && dist < this.perceptionRadius) {
                 const diff = Vector.sub(this.position, boid.position).normalize();
                 sum.add(diff);
                 count++;
             }
         });
 
-            if (count > 0) {
+        if (count > 0) {
             sum.divide(count);
             sum.setMagnitude(this.maxSpeed);
             const steering = Vector.sub(sum, this.velocity);
@@ -118,17 +118,17 @@ class Boid extends Enemy {
         } else return new Vector();
     }
 
-        align(boids) {
+    align(boids) {
         const sum = new Vector();
         let count = 0;
-            boids.forEach(boid => {
+        boids.forEach(boid => {
             const dist = this.position.dist(boid.position);
-                if (dist > 0 && dist < this.perceptionRadius * 4) {
+            if (dist > 0 && dist < this.perceptionRadius * 4) {
                 sum.add(boid.velocity);
                 count++;
             }
         });
-            if (count > 0) {
+        if (count > 0) {
             sum.divide(count);
             const sumN = sum.normalize();
             sumN.setMagnitude(this.maxSpeed);
@@ -139,23 +139,23 @@ class Boid extends Enemy {
         } else return new Vector();
     }
 
-        cohesion(boids) {
+    cohesion(boids) {
         const sum = new Vector();
         let count = 0;
-            boids.forEach(boid => {
+        boids.forEach(boid => {
             const dist = this.position.dist(boid.position);
-                if (dist > 0 && dist < this.perceptionRadius * 2) {
+            if (dist > 0 && dist < this.perceptionRadius * 2) {
                 sum.add(boid.position);
                 count++;
             }
         });
-            if (count > 0) {
+        if (count > 0) {
             sum.divide(count);
             return this.seek(sum);
         } else return new Vector();
     }
 
-        flock(boids) {
+    flock(boids) {
         const separation = this.separate(boids).multiply(1.4);
         const alignment = this.align(boids).multiply(1);
         const cohesion = this.cohesion(boids).multiply(0.5);
@@ -175,7 +175,7 @@ class Boid extends Enemy {
     //     if (this.position.y - this.radius < 0) this.position.y = c.height + this.radius;
     // }
 
-        update(dt) {
+    update(dt) {
         this.handleRotation();
 
         this.velocity.add(this.acceleration);

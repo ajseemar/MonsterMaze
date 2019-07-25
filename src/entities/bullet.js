@@ -21,7 +21,7 @@ class Bullet {
 
         this.radius = 4;
 
-        this.speed = 1;
+        this.speed = 1000;
 
         this.collided = false;
 
@@ -43,8 +43,8 @@ class Bullet {
     }
 
     render(ctx, offset) {
-        debugger
-        ctx.drawImage(this.sprite, this.position.x + offset.x, this.position.y + offset.y);
+        // debugger
+        ctx.drawImage(Bullet.sprite, this.position.x + offset.x, this.position.y + offset.y);
     }
 
     static update(bullets, collisionDetector, dt) {

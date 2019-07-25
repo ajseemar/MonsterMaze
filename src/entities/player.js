@@ -20,6 +20,17 @@ Function.prototype.throttle = function (interval) {
     }
 }
 
+const throttle = (func, interval) => {
+    let tooSoon = false;
+    return (...args) => {
+        if (!tooSoon) {
+            tooSoon = true;
+            setTimeout(() => tooSoon = false, interval);
+            func(...args);
+        }
+    }
+}
+
 
 Function.prototype.debounce = function (interval) {
     // declare a variable outside of the returned function
@@ -58,6 +69,7 @@ class Player extends Sprite {
 
         this.size = cellSize;
 
+        // this.radius = size.w > size.h ? size.h / 5 : size.w / 5;
         // this.bullets = {};
 
         // const debounce = (func, delay) => {
@@ -94,7 +106,8 @@ class Player extends Sprite {
         // // this.shoot = debounce(this.shoot, 10);
         // this.shoot = throttle(this.shoot.bind(this), 100);
         // document.addEventListener('mousemove', this.handleRotation.bind(this));
-        this.shoot = this.shoot.throttle(100);
+        // this.shoot = this.shoot.throttle(100);
+        this.shoot = throttle(this.shoot.bind(this), 100);
         // this.shoot = this.shoot.debounce(100);
         this.bullets = {};
     }
@@ -131,7 +144,7 @@ class Player extends Sprite {
     }
 
     shoot(delta) {
-        debugger
+        // debugger
         const bullet = new Bullet(this.bulletSprite, this.position, this.size);
         let x, y;
         if (navigator.getGamepads()[0]) {
@@ -163,6 +176,11 @@ class Player extends Sprite {
     }
 
     render(ctx, offset) {
+        ctx.fillStyle = "#f0f";
+        ctx.beginPath();
+        ctx.arc(this.position.x + offset.x, this.position.y + offset.y, this.radius, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
 
         ctx.save();
         ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
@@ -171,6 +189,8 @@ class Player extends Sprite {
         ctx.fillStyle = "#f00";
         ctx.fillRect(-5, -5, 10, 10);
         ctx.restore();
+
+
 
         Bullet.render(this.bullets, ctx, offset);
 

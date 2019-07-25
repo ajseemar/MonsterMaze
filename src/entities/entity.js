@@ -15,7 +15,7 @@ class Entity {
         this.size = size;
         this.angle = 0;
         this.speed = 0;
-        this.radius = size.w > size.h ? size.h / 2.5 : size.w / 2.5;
+        this.radius = size.w > size.h ? size.h / 8 : size.w / 8;
     }
 
     applyForce(...forces) {
@@ -23,6 +23,6 @@ class Entity {
             this.acceleration.add(force);
         });
     }
-    } 
+}
 
-            module.exports = Entity;
+module.exports = Entity;

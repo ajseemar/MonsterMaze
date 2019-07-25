@@ -9,6 +9,7 @@ class Enemy extends Sprite {
         super(sprite, size);
         this.name = name
         this.cellCount = Math.sqrt(cells.length);
+
         const row = Math.floor(Math.random() * this.cellCount);
         const col = Math.floor(Math.random() * this.cellCount);
 
@@ -69,6 +70,12 @@ class Enemy extends Sprite {
     }
 
     render(ctx, offset) {
+        ctx.fillStyle = "#f0f";
+        ctx.beginPath();
+        ctx.arc(this.position.x + offset.x, this.position.y + offset.y, this.radius, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
+
         ctx.save();
         ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
         ctx.rotate(this.angle);
@@ -77,20 +84,15 @@ class Enemy extends Sprite {
         // debugger
         ctx.restore();
 
-        // ctx.fillStyle = "#f0f";
-        // ctx.beginPath();
-        // ctx.arc(this.position.x + offset.x, this.position.y + offset.y, this.radius, 0, 2 * Math.PI);
-        // ctx.closePath();
-        // ctx.fill();
 
-    //     // normal point on path relative to predicted pos
-    //     // ctx.fillStyle = "#0ff";
-    //     // ctx.beginPath();
-    //     // ctx.arc(this.normal.x, this.normal.y, this.radius / 3, 0, 2 * Math.PI);
-    //     // ctx.closePath();
-    //     // ctx.fill();
+        //     // normal point on path relative to predicted pos
+        //     // ctx.fillStyle = "#0ff";
+        //     // ctx.beginPath();
+        //     // ctx.arc(this.normal.x, this.normal.y, this.radius / 3, 0, 2 * Math.PI);
+        //     // ctx.closePath();
+        //     // ctx.fill();
 
-    //     // // target point on path boid aims to seek
+        //     // // target point on path boid aims to seek
         // ctx.fillStyle = "#fff";
         // ctx.beginPath();
         // ctx.arc(this.target.x, this.target.y, this.radius / 3, 0, 2 * Math.PI);

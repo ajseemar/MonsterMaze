@@ -8,6 +8,7 @@ const Cell = require('./maze/cell');
 const Boid = require('./entities/boid');
 const Camera = require('./entities/camera');
 const Vector = require('./utils/vector');
+const Bullet = require('./entities/bullet');
 
 // GAME CONSTANTS
 const MAX_ENEMIES = 50;
@@ -51,7 +52,7 @@ class Game {
 
     initPlayer() {
         this.player.sprite = this.rm.get('player_standing');
-        this.player.bulletSprite = this.rm.get('bullet');
+        Bullet.sprite = this.player.bulletSprite = this.rm.get('bullet');
         // Object.values(this.player.bullets).forEach(bullet => bullet.sprite = this.player.bulletSprite);
         // debugger
     }
