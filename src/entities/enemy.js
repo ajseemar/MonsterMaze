@@ -7,7 +7,8 @@ const Vector = require('../utils/vector');
 class Enemy extends Sprite {
     constructor(name, sprite, size, cells, endIdx) {
         super(sprite, size);
-        this.name = name
+        this.name = name;
+        this.hp = 100;
         this.cellCount = Math.sqrt(cells.length);
 
         const row = Math.floor(Math.random() * this.cellCount);
@@ -62,6 +63,12 @@ class Enemy extends Sprite {
         if (!this.target) return;
         const diff = Vector.sub(this.target, this.position);
         this.angle = diff.getDirection();
+    }
+
+    hit() {
+        this.hp -= 100;
+        if (this.hp <= 0) return true;
+        return false;
     }
 
     update() {

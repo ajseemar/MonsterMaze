@@ -55,6 +55,7 @@ Function.prototype.debounce = function (interval) {
 class Player extends Sprite {
     constructor(sprite, cellSize, inputHandler) {
         super(sprite, cellSize);
+        this.hp = 100;
         // this.size = size / 3;
         // this.radius = this.size * 3 / 2;
 
@@ -162,7 +163,6 @@ class Player extends Sprite {
         bullet.updateVelocity(x, y);
         // if (!bullet.sprite) return;
         this.bullets[bullet.id] = bullet;
-        // console.log(this.bullets);
     }
 
     update(dt, collisionDetector) {

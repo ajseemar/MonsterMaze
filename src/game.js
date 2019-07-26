@@ -10,7 +10,7 @@ const Bullet = require('./entities/bullet');
 const CollisionDetector = require('./physics/collision');
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 50;
+const MAX_ENEMIES = 10;
 
 class Game {
     constructor(size, rm) {
@@ -213,6 +213,11 @@ class Game {
             this.player.handleRotation(this.mousePos);
         }
         // this.enemy.update();
+        this.player.update(dt, this.collisionDetector);
+
+        const collided = this.collisionDetector.detectCollision(this.player);
+        collided.forEach(collision => this.collisionDetector.resolveCollision(collision, this.player));
+
         this.zombies.forEach(zombie => {
             zombie.solver.update();
             // if (zombie.solver.finished) {
@@ -224,14 +229,27 @@ class Game {
             // zombie.applyBehaviors(zombie.solver.path, this.zombies);
             // zombie.solver.update();
             // this.updateSolver(zombie);
+
+            // TODO create zombie hit function that decreases hp
+            Object.keys(this.player.bullets).forEach(id => {
+                // bullets[id].update(dt);
+                if (this.player.bullets[id].hit(zombie)) {
+                    if (zombie.hit()) console.log(zombie.name, 'died');
+                    delete this.player.bullets[id];
+                }
+                // const bullet = this.player.bullets[id];
+                // const dist = bullet.position.dist(zombie.position);
+                // if (dist <= bullet.radius + zombie.radius) delete this.player.bullets[id];
+                // const collided = collisionDetector.detectCollision(bullets[id]);
+                // if (collided.length > 0) bullets[id].collided = true;
+                // if (bullets[id].collided) delete bullets[id];
+            });
+
             const collided = this.collisionDetector.detectCollision(zombie);
             collided.forEach(collision => this.collisionDetector.resolveCollision(collision, zombie));
         });
         // this.enemy2.update();
-        this.player.update(dt, this.collisionDetector);
 
-        const collided = this.collisionDetector.detectCollision(this.player);
-        collided.forEach(collision => this.collisionDetector.resolveCollision(collision, this.player));
 
         this.viewport.update(this.player.position.x, this.player.position.y);
     }

@@ -26,6 +26,8 @@ class Bullet {
         this.collided = false;
 
         this.prevCollisionLength = 0;
+
+        // Bullet.bullets[this.id] = this;
     }
 
     updateVelocity(x, y) {
@@ -33,8 +35,12 @@ class Bullet {
         this.velocity.y = y * this.speed;
     }
 
-    checkCollision() {
-
+    hit(entity) {
+        const dist = this.position.dist(entity.position);
+        if (dist <= this.radius + entity.radius) {
+            return true;
+        }
+        return false;
     }
 
     update(dt) {
@@ -60,5 +66,7 @@ class Bullet {
         Object.values(bullets).forEach(bullet => bullet.render(...renderArgs));
     }
 }
+
+Bullet.bullets = {};
 
 module.exports = Bullet;
