@@ -38,6 +38,7 @@ class Bullet {
     hit(entity) {
         const dist = this.position.dist(entity.position);
         if (dist <= this.radius + entity.radius) {
+            entity.hit();
             return true;
         }
         return false;

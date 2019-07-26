@@ -96,6 +96,10 @@ class A_Star {
         // debugger
     }
 
+    resize() {
+        this.nodes.forEach(node => node.resize());
+    }
+
     // updateSolver(start, end) {
     //     this.start = start;
     //     this.end = end;

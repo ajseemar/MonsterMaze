@@ -41,7 +41,7 @@ class Enemy extends Sprite {
         // console.log(this.sprite.width, this.sprite.height);
         // this.sprite.width = this.size.width / this.aspectRatio;
         // this.sprite.height = this.size.height / this.aspectRatio;
-        if (this.solver.finished) this.solver.path.resize();
+        if (this.solver.finished) this.solver.resize();
     }
     updateSolver(endIdx) {
         let row = Math.floor(this.position.y / this.size.h);
@@ -70,8 +70,14 @@ class Enemy extends Sprite {
 
     hit() {
         this.hp -= 50;
+        // this.dead();
+
+        // return false;
+    }
+
+    dead() {
         if (this.hp <= 0) return true;
-        return false;
+        return false
     }
 
     update() {

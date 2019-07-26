@@ -8,6 +8,7 @@ const Camera = require('./entities/camera');
 const Vector = require('./utils/vector');
 const Bullet = require('./entities/bullet');
 const CollisionDetector = require('./physics/collision');
+const KEYS = require('./utils/keys');
 
 // GAME CONSTANTS
 const MAX_ENEMIES = 25;
@@ -45,6 +46,9 @@ class Game {
 
         this.mousePos = new Vector();
 
+        this.paused = false;
+        this.canUnpause = false;
+
         // for (let i = 0; i < 3; i++) this.spawnEnemy();
         this.initialTime = Date.now();
     }
@@ -57,7 +61,7 @@ class Game {
     }
 
     spawnEnemy() {
-        if (Object.keys(this.zombies).length >= MAX_ENEMIES) return;
+        if (Object.keys(this.zombies).length >= MAX_ENEMIES || this.paused) return;
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = index(row, col, this.cellCount);
@@ -162,11 +166,13 @@ class Game {
     }
 
     handleClick(e) {
+        if (this.paused) return;
         e.preventDefault();
         this.player.shoot(this.getMousePosition(e));
     }
 
     handleRotation(e) {
+        if (this.paused) return;
         this.mousePos = this.getMousePosition(e);
     }
 
@@ -207,6 +213,13 @@ class Game {
         return true;
     }
 
+    // handleInput() {
+    //     if (this.ih.isPressed(KEYS.SPACE)) {
+    //         if (this.canUnpause) this.paused = false;
+    //         else this.paused = true;
+    //     }
+    // }
+
     update(dt) {
         this.collisionDetector.updateCollidables(this.viewport.startTile, this.viewport.endTile, this.grid.cells);
         if (!this.updateGamepad()) {
@@ -236,7 +249,7 @@ class Game {
             Object.keys(this.player.bullets).forEach(id => {
                 // bullets[id].update(dt);
                 if (this.player.bullets[id].hit(zombie)) {
-                    if (zombie.hit()) delete this.zombies[zombie.id];
+                    if (zombie.dead()) delete this.zombies[zombie.id];
                     delete this.player.bullets[id];
                 }
                 // const bullet = this.player.bullets[id];
