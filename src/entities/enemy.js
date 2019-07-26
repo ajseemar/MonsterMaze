@@ -4,11 +4,14 @@ const A_Star = require('../maze/solver/a_star');
 const Cell = require('../maze/cell');
 const Vector = require('../utils/vector');
 
+const uuid = require('uuid');
+
 class Enemy extends Sprite {
     constructor(name, sprite, size, cells, endIdx) {
         super(sprite, size);
+        this.id = uuid();
         this.name = name;
-        this.hp = 100;
+        this.hpMax = this.hp = 100;
         this.cellCount = Math.sqrt(cells.length);
 
         const row = Math.floor(Math.random() * this.cellCount);
@@ -66,7 +69,7 @@ class Enemy extends Sprite {
     }
 
     hit() {
-        this.hp -= 100;
+        this.hp -= 50;
         if (this.hp <= 0) return true;
         return false;
     }
@@ -85,6 +88,15 @@ class Enemy extends Sprite {
 
         ctx.save();
         ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
+
+        // render hp bar
+        ctx.fillStyle = "#c7c7c7";
+        ctx.fillRect(-50, -40, 100, 10);
+        ctx.fillStyle = "#cc0000";
+        const width = Math.floor(100 * this.hp / this.hpMax);
+        ctx.fillRect(-50, -40, width, 10);
+
+
         ctx.rotate(this.angle);
         ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         // ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);

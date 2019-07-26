@@ -10,7 +10,7 @@ const Bullet = require('./entities/bullet');
 const CollisionDetector = require('./physics/collision');
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 10;
+const MAX_ENEMIES = 50;
 
 class Game {
     constructor(size, rm) {
@@ -41,7 +41,7 @@ class Game {
         window.addEventListener('click', this.handleClick.bind(this));
 
         window.setInterval(this.spawnEnemy.bind(this), 1000);
-        window.zombies = this.zombies = [];
+        window.zombies = this.zombies = {};
 
         this.mousePos = new Vector();
 
@@ -57,7 +57,7 @@ class Game {
     }
 
     spawnEnemy() {
-        if (this.zombies.length >= MAX_ENEMIES) return;
+        if (Object.keys(this.zombies).length >= MAX_ENEMIES) return;
         let row = Math.floor(this.player.position.y / this.player.size.h);
         let col = Math.floor(this.player.position.x / this.player.size.w);
         let end = index(row, col, this.cellCount);
@@ -71,7 +71,8 @@ class Game {
         }
         let zombie = new Boid(`zombie_${this.zombies.length + 1}`, this.rm.get('zombie'), this.cellSize, this.grid.cells, end);
         window.setInterval(this.updateSolver.bind(this, zombie), 1000);
-        this.zombies.push(zombie);
+        // this.zombies.push(zombie);
+        this.zombies[zombie.id] = zombie;
     }
 
     updateSolver(zombie) {
@@ -113,8 +114,8 @@ class Game {
             });
         }
         // if (this.player) this.player.sprite.resize(this.cellSize);
-        if (this.zombies && this.zombies.length > 0) {
-            this.zombies.forEach(zombie => zombie.resize(this.cellSize));
+        if (this.zombies && Object.keys(this.zombies).length > 0) {
+            Object.values(this.zombies).forEach(zombie => zombie.resize(this.cellSize));
         }
         // if (this.enemy) this.enemy.resize(this.cellSize);
         // if (this.enemy2) this.enemy2.resize(this.cellSize);
@@ -218,11 +219,12 @@ class Game {
         const collided = this.collisionDetector.detectCollision(this.player);
         collided.forEach(collision => this.collisionDetector.resolveCollision(collision, this.player));
 
-        this.zombies.forEach(zombie => {
+        Object.keys(this.zombies).forEach(id => {
+            const zombie = this.zombies[id];
             zombie.solver.update();
             // if (zombie.solver.finished) {
             // zombie.follow(zombie.solver.path);
-            zombie.applyBehaviors(zombie.solver.path, this.zombies, this.player.position);
+            zombie.applyBehaviors(zombie.solver.path, Object.values(this.zombies), this.player.position);
             // debugger
             zombie.update();
             // }
@@ -234,7 +236,7 @@ class Game {
             Object.keys(this.player.bullets).forEach(id => {
                 // bullets[id].update(dt);
                 if (this.player.bullets[id].hit(zombie)) {
-                    if (zombie.hit()) console.log(zombie.name, 'died');
+                    if (zombie.hit()) delete this.zombies[zombie.id];
                     delete this.player.bullets[id];
                 }
                 // const bullet = this.player.bullets[id];
@@ -265,7 +267,7 @@ class Game {
         this.player.render(this.ctx, this.viewport.offset);
         // this.enemy.render(this.ctx);
         // this.enemy2.render(this.ctx);
-        this.zombies.forEach(zombie => {
+        Object.values(this.zombies).forEach(zombie => {
             // if (zombie.solver.finished)
             zombie.render(this.ctx, this.viewport.offset);
         });

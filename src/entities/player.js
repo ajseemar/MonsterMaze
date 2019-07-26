@@ -55,7 +55,7 @@ Function.prototype.debounce = function (interval) {
 class Player extends Sprite {
     constructor(sprite, cellSize, inputHandler) {
         super(sprite, cellSize);
-        this.hp = 100;
+        this.hpMax = this.hp = 100;
         // this.size = size / 3;
         // this.radius = this.size * 3 / 2;
 
@@ -108,7 +108,7 @@ class Player extends Sprite {
         // this.shoot = throttle(this.shoot.bind(this), 100);
         // document.addEventListener('mousemove', this.handleRotation.bind(this));
         // this.shoot = this.shoot.throttle(100);
-        this.shoot = throttle(this.shoot.bind(this), 100);
+        // this.shoot = throttle(this.shoot.bind(this), 100);
         // this.shoot = this.shoot.debounce(100);
         this.bullets = {};
     }
