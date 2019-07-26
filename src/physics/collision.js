@@ -1,6 +1,7 @@
-const index = require('../utils/utils');
+const { index } = require('../utils/utils');
 
-const Point = require('../maze/point');
+// const Point = require('../maze/point');
+const Vector = require('../utils/vector');
 
 class CollisionDetector {
     constructor(cellCount) {
@@ -75,7 +76,7 @@ class CollisionDetector {
                 x >= Math.min(wall2.p1.x, wall2.p2.x) && x <= Math.max(wall2.p1.x, wall2.p2.x) &&
                 y >= Math.min(wall1.p1.y, wall1.p2.y) && y <= Math.max(wall1.p1.y, wall1.p2.y) &&
                 y >= Math.min(wall2.p1.y, wall2.p2.y) && y <= Math.max(wall2.p1.y, wall2.p2.y)) {
-                return new Point(x, y);
+                return new Vector(x, y);
             }
         }
         return null;
@@ -100,7 +101,7 @@ class CollisionDetector {
             cy = circle.position.y;
         }
 
-        return new Point(cx, cy);
+        return new Vector(cx, cy);
     }
 }
 

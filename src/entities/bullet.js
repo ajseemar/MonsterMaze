@@ -50,9 +50,9 @@ class Bullet {
     static update(bullets, collisionDetector, dt) {
         Object.keys(bullets).forEach(id => {
             bullets[id].update(dt);
-            // const collided = collisionDetector.detectCollision(bullets[id]);
-            // if (collided.length > 0) bullets[id].collided = true;
-            // if (bullets[id].collided) delete bullets[id];
+            const collided = collisionDetector.detectCollision(bullets[id]);
+            if (collided.length > 0) bullets[id].collided = true;
+            if (bullets[id].collided) delete bullets[id];
         });
     }
 

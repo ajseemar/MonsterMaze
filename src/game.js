@@ -3,12 +3,11 @@ const Grid = require('./maze/grid');
 const Maze = require('./maze/maze');
 const Player = require('./entities/player');
 const InputManager = require('./utils/input');
-const Enemy = require('./entities/enemy');
-const Cell = require('./maze/cell');
 const Boid = require('./entities/boid');
 const Camera = require('./entities/camera');
 const Vector = require('./utils/vector');
 const Bullet = require('./entities/bullet');
+const CollisionDetector = require('./physics/collision');
 
 // GAME CONSTANTS
 const MAX_ENEMIES = 50;
@@ -29,7 +28,7 @@ class Game {
         this.ih = new InputManager();
 
         window.player = this.player = new Player(this.rm.get('player_standing'), this.cellSize, this.ih);
-
+        this.collisionDetector = new CollisionDetector(size);
 
 
         this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);
@@ -208,7 +207,7 @@ class Game {
     }
 
     update(dt) {
-        // this.solver.update();
+        this.collisionDetector.updateCollidables(this.viewport.startTile, this.viewport.endTile, this.grid.cells);
         if (!this.updateGamepad()) {
             this.player.handleInput();
             this.player.handleRotation(this.mousePos);
@@ -225,9 +224,14 @@ class Game {
             // zombie.applyBehaviors(zombie.solver.path, this.zombies);
             // zombie.solver.update();
             // this.updateSolver(zombie);
+            const collided = this.collisionDetector.detectCollision(zombie);
+            collided.forEach(collision => this.collisionDetector.resolveCollision(collision, zombie));
         });
         // this.enemy2.update();
-        this.player.update(dt);
+        this.player.update(dt, this.collisionDetector);
+
+        const collided = this.collisionDetector.detectCollision(this.player);
+        collided.forEach(collision => this.collisionDetector.resolveCollision(collision, this.player));
 
         this.viewport.update(this.player.position.x, this.player.position.y);
     }
@@ -238,7 +242,7 @@ class Game {
 
         // this.maze.render(this.ctx);
 
-        this.viewport.render(this.ctx, this.maze.grid.cells);
+        this.viewport.render(this.ctx, this.grid.cells);
         // this.solver.render(this.ctx);
         this.player.render(this.ctx, this.viewport.offset);
         // this.enemy.render(this.ctx);
