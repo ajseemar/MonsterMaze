@@ -28,7 +28,7 @@ class Game {
 
         this.ih = new InputManager();
 
-        window.player = this.player = new Player(this.rm.get('player_standing'), this.cellSize, this.ih);
+        this.player = new Player(this.rm.get('player_standing'), this.cellSize, this.ih);
         this.collisionDetector = new CollisionDetector(size);
 
 
@@ -42,14 +42,44 @@ class Game {
         window.addEventListener('click', this.handleClick.bind(this));
 
         window.setInterval(this.spawnEnemy.bind(this), 1000);
-        window.zombies = this.zombies = {};
+        this.zombies = {};
 
         this.mousePos = new Vector();
 
         this.paused = false;
         this.canUnpause = false;
 
+        this.gameOver = false;
+        this.started = false;
+
+        window.addEventListener("gamepadconnected", (e) => {
+            // this.inputHandler.gamepad = e.gamepad
+            console.log('gamepad connected: ', e.gamepad);
+        });
+
+        window.addEventListener("gamepaddisconnected", (event) => {
+            console.log("A gamepad disconnected:");
+            delete this.inputHandler.gamepad;
+            console.log(event.gamepad);
+        });
+
         // for (let i = 0; i < 3; i++) this.spawnEnemy();
+        this.initialTime = Date.now();
+    }
+
+    restart() {
+        delete this.player;
+        delete this.grid;
+        delete this.maze;
+        delete this.zombies;
+        this.player = new Player(this.rm.get('player_standing'), this.cellSize, this.ih);
+        this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);
+        this.maze = new Maze(this.cellCount, this.cellSize, this.width, this.height, this.grid);
+        this.zombies = {};
+
+        this.gameOver = false;
+        this.paused = false;
+        this.canUnpause = false;
         this.initialTime = Date.now();
     }
 
@@ -185,7 +215,7 @@ class Game {
         if (!this.gamepad) return false; // no gamepad to update. Use key states from inputHandler
 
         // handle shooting bullets
-        if (this.gamepad.axes[4] > 0) {
+        if (this.gamepad.axes[4] > 0.7) {
             // console.log('Right Trigger Pressed');
             this.player.shoot();
         }
@@ -195,11 +225,10 @@ class Game {
         this.player.velocity.y = this.gamepad.axes[1] * this.player.speed;
 
         // handle rotation
-        if (this.gamepad.axes[2] !== 0 && this.gamepad.axes[3] !== 0) {
-            this.player.delta = {
-                x: this.gamepad.axes[2],
-                y: this.gamepad.axes[3]
-            };
+        // if ((this.gamepad.axes[2] !== 0 && Math.abs(this.gamepad.axes[3]) >= 0.001) ||
+        //     (Math.abs(this.gamepad.axes[2]) >= 0.001 && Math.abs(this.gamepad.axes[3]) !== 0)) {
+        if (Math.abs(this.gamepad.axes[2]) >= 0.001 || Math.abs(this.gamepad.axes[3]) >= 0.001) {
+            this.player.delta = new Vector(this.gamepad.axes[2], this.gamepad.axes[3]);
             this.player.angle = Math.atan2(this.gamepad.axes[3], this.gamepad.axes[2]) * 180 / Math.PI;
         }
 
@@ -221,17 +250,24 @@ class Game {
     // }
 
     update(dt) {
+        // check if game over
+        if (this.player.dead()) this.gameOver = true;
+
+        // recalculate portion of game map that is collidable
         this.collisionDetector.updateCollidables(this.viewport.startTile, this.viewport.endTile, this.grid.cells);
+
+        // if gamepad is connected, update player position using gamepad otherwise handle keyboard and mouse input
         if (!this.updateGamepad()) {
             this.player.handleInput();
             this.player.handleRotation(this.mousePos);
         }
-        // this.enemy.update();
         this.player.update(dt, this.collisionDetector);
 
+        // resolve any collisions that may have occurred after player movement
         const collided = this.collisionDetector.detectCollision(this.player);
         collided.forEach(collision => this.collisionDetector.resolveCollision(collision, this.player));
 
+        // update all the zombies
         Object.keys(this.zombies).forEach(id => {
             const zombie = this.zombies[id];
             zombie.solver.update();
@@ -246,22 +282,28 @@ class Game {
             // this.updateSolver(zombie);
 
             // TODO create zombie hit function that decreases hp
-            Object.keys(this.player.bullets).forEach(id => {
-                // bullets[id].update(dt);
-                if (this.player.bullets[id].hit(zombie)) {
-                    if (zombie.dead()) delete this.zombies[zombie.id];
-                    delete this.player.bullets[id];
-                }
-                // const bullet = this.player.bullets[id];
-                // const dist = bullet.position.dist(zombie.position);
-                // if (dist <= bullet.radius + zombie.radius) delete this.player.bullets[id];
-                // const collided = collisionDetector.detectCollision(bullets[id]);
-                // if (collided.length > 0) bullets[id].collided = true;
-                // if (bullets[id].collided) delete bullets[id];
-            });
+            zombie.attack(this.player);
+            if (zombie.dead()) {
+                delete this.zombies[zombie.id];
+            } else {
+                Object.keys(this.player.bullets).forEach(id => {
+                    // bullets[id].update(dt);
+                    if (this.player.bullets[id].hit(zombie)) {
+                        if (zombie.dead()) delete this.zombies[zombie.id];
+                        delete this.player.bullets[id];
+                    }
+                    // const bullet = this.player.bullets[id];
+                    // const dist = bullet.position.dist(zombie.position);
+                    // if (dist <= bullet.radius + zombie.radius) delete this.player.bullets[id];
+                    // const collided = collisionDetector.detectCollision(bullets[id]);
+                    // if (collided.length > 0) bullets[id].collided = true;
+                    // if (bullets[id].collided) delete bullets[id];
+                });
 
-            const collided = this.collisionDetector.detectCollision(zombie);
-            collided.forEach(collision => this.collisionDetector.resolveCollision(collision, zombie));
+                // handle any collisions that may have occured between zombie and walls
+                const collided = this.collisionDetector.detectCollision(zombie);
+                collided.forEach(collision => this.collisionDetector.resolveCollision(collision, zombie));
+            }
         });
         // this.enemy2.update();
 
@@ -277,13 +319,16 @@ class Game {
 
         this.viewport.render(this.ctx, this.grid.cells);
         // this.solver.render(this.ctx);
-        this.player.render(this.ctx, this.viewport.offset);
         // this.enemy.render(this.ctx);
         // this.enemy2.render(this.ctx);
+        if (this.started) this.player.render(this.ctx, this.viewport.offset);
+
         Object.values(this.zombies).forEach(zombie => {
             // if (zombie.solver.finished)
             zombie.render(this.ctx, this.viewport.offset);
         });
+
+        if (this.started) this.player.renderUI(this.ctx);
 
         // debug info mouse pos rotation angle
         this.ctx.fillStyle = "#fff";

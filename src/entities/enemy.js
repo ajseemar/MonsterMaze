@@ -68,8 +68,18 @@ class Enemy extends Sprite {
         this.angle = diff.getDirection();
     }
 
-    hit() {
-        this.hp -= 50;
+    attack(player) {
+        const dist = this.position.dist(player.position);
+        if (dist <= this.radius + player.radius) {
+            player.hit();
+            this.hit(0.1);
+            return true;
+        }
+        return false;
+    }
+
+    hit(dmg) {
+        this.hp -= dmg || 25;
         // this.dead();
 
         // return false;
@@ -98,7 +108,23 @@ class Enemy extends Sprite {
         // render hp bar
         ctx.fillStyle = "#c7c7c7";
         ctx.fillRect(-50, -40, 100, 10);
-        ctx.fillStyle = "#cc0000";
+
+        // generic red bar
+        // ctx.fillStyle = "#cc0000";
+        // dynamic bar
+        const ar = 255;
+        const ag = 0;
+        const ab = 0;
+
+        const br = 0;
+        const bg = 255;
+        const bb = 0;
+
+        const ratio = this.hp / this.hpMax;
+        const cr = ar + (br - ar) * ratio;
+        const cg = ag + (bg - ag) * ratio;
+        const cb = ab + (bb - ab) * ratio;
+        ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
         const width = Math.floor(100 * this.hp / this.hpMax);
         ctx.fillRect(-50, -40, width, 10);
 
