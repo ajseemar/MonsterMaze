@@ -186,8 +186,6 @@ class Player extends Sprite {
         ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
         ctx.rotate(this.angle * Math.PI / 180);
         ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
-        ctx.fillStyle = "#f00";
-        ctx.fillRect(-5, -5, 10, 10);
         ctx.restore();
 
 
