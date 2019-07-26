@@ -10,7 +10,7 @@ const Bullet = require('./entities/bullet');
 const CollisionDetector = require('./physics/collision');
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 50;
+const MAX_ENEMIES = 25;
 
 class Game {
     constructor(size, rm) {
