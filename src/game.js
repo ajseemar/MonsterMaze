@@ -39,7 +39,9 @@ class Game {
         this.viewport = new Camera(this.width, this.height, size, this.cellSize.w);
 
         window.addEventListener('mousemove', this.handleRotation.bind(this));
-        window.addEventListener('click', this.handleClick.bind(this));
+        // window.addEventListener('click', this.handleClick.bind(this));
+        window.addEventListener('mousedown', this.handleMouseDown.bind(this));
+        window.addEventListener('mouseup', this.handleMouseUp.bind(this));
 
         window.setInterval(this.spawnEnemy.bind(this), 1000);
         this.zombies = {};
@@ -192,18 +194,33 @@ class Game {
         const dy = mousePos.y - this.canvas.height / 2;
         const dx = mousePos.x - this.canvas.width / 2;
 
+        this.mousePos.x = dx;
+        this.mousePos.y = dy;
         return { x: dx, y: dy };
     }
 
-    handleClick(e) {
-        if (this.paused) return;
+    handleMouseDown(e) {
         e.preventDefault();
-        this.player.shoot(this.getMousePosition(e));
+        this.player.firing = true;
+
+    }
+
+    handleMouseUp(e) {
+        e.preventDefault();
+        this.player.firing = false;
+    }
+
+    handleClick(e) {
+        // if (this.paused) return;
+        // e.preventDefault();
+        // this.player.shoot(this.getMousePosition(e));
+
     }
 
     handleRotation(e) {
         if (this.paused) return;
         this.mousePos = this.getMousePosition(e);
+        // this.player.shoot = this.player.shoot.bind(this.player, this.mousePos);
     }
 
     // spawnEnemy() {
@@ -217,7 +234,7 @@ class Game {
         // handle shooting bullets
         if (this.gamepad.axes[4] > 0.7) {
             // console.log('Right Trigger Pressed');
-            this.player.shoot();
+            // this.player.shoot(this.mousePos);
         }
 
         // handle velocity
@@ -260,6 +277,7 @@ class Game {
         if (!this.updateGamepad()) {
             this.player.handleInput();
             this.player.handleRotation(this.mousePos);
+            if (this.player.firing) this.player.shoot(this.mousePos);
         }
         this.player.update(dt, this.collisionDetector);
 
