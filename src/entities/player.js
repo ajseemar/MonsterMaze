@@ -199,7 +199,7 @@ class Player extends Sprite {
     }
 
     renderUI(ctx) {
-        const grd = ctx.createLinearGradient(0.000, 150.000, 300.000, 150.000);
+        // const grd = ctx.createLinearGradient(0.000, 150.000, 300.000, 150.000);
 
         // Add colors
         // grd.addColorStop(0.000, 'rgba(225, 0, 25, 1.000)');
@@ -260,13 +260,13 @@ class Player extends Sprite {
         ctx.restore();
 
         // render keys
-        Object.keys(this.keys).forEach(key => {
-            if (this.keys[key]) {
-                key.render(ctx);
-            } else {
-                Key.render(ctx);
-            }
-        });
+        // Object.keys(this.keys).forEach(key => {
+        //     if (this.keys[key]) {
+        //         key.render(ctx);
+        //     } else {
+        //         Key.render(ctx);
+        //     }
+        // });
     }
 
     render(ctx, offset) {

@@ -510,8 +510,9 @@ class Game {
                 this.startFlag.render(this.ctx, this.viewport.offset);
                 this.endFlag.render(this.ctx, this.viewport.offset);
             }
+            // this.ui.render(this.ctx);
+            this.player.renderUI(this.ctx);
         }
-        this.ui.render(this.ctx);
 
 
 
