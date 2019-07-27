@@ -37,7 +37,7 @@ const assets = {
 var rm = new ResourceManager();
 var game, menu;
 const initGame = () => {
-    game = new Game(5, rm);
+    game = new Game(20, rm);
     menu = new Menu(game);
 };
 

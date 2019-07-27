@@ -13,7 +13,7 @@ const Key = require('./entities/pickups/key');
 const Flag = require('./entities/pickups/flag');
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 2;
+const MAX_ENEMIES = 15;
 
 class Game {
     constructor(size, rm) {
