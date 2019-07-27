@@ -112,6 +112,14 @@ class Player extends Sprite {
         // this.shoot = this.shoot.debounce(100);
         this.delta = new Vector();
         this.bullets = {};
+        this.keys = {
+            "blue": null,
+            "green": null,
+            "red": null
+        };
+
+        this.time = Date.now();
+        this.kills = 0;
     }
 
     handleRotation(delta, origin) {
@@ -173,6 +181,11 @@ class Player extends Sprite {
 
     dead() {
         return this.hp <= 0;
+    }
+
+    pickUpKey(key) {
+        console.log('picked up key:', key);
+        this.keys[key.keyColor] = key;
     }
 
     update(dt, collisionDetector) {

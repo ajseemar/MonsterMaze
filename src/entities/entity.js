@@ -7,7 +7,7 @@ class Entity {
 
         this.position = new Vector();
 
-        this.maxSpeed = 0.3;
+        this.maxSpeed = 0.2;
         this.maxForce = 0.005;
         this.velocity = new Vector(this.maxSpeed, 0);
         this.acceleration = new Vector();

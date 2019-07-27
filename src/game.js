@@ -9,14 +9,16 @@ const Vector = require('./utils/vector');
 const Bullet = require('./entities/bullet');
 const CollisionDetector = require('./physics/collision');
 const KEYS = require('./utils/keys');
+const Key = require('./entities/pickups/key');
+const Flag = require('./entities/pickups/flag');
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 25;
+const MAX_ENEMIES = 2;
 
 class Game {
     constructor(size, rm) {
         this.rm = rm;
-        this.rm.onReady(this.initPlayer.bind(this));
+        // this.rm.onReady(this.initSprites.bind(this));
 
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -38,6 +40,8 @@ class Game {
 
         this.viewport = new Camera(this.width, this.height, size, this.cellSize.w);
 
+        // this.initKeys();
+
         window.addEventListener('mousemove', this.handleRotation.bind(this));
         // window.addEventListener('click', this.handleClick.bind(this));
         window.addEventListener('mousedown', this.handleMouseDown.bind(this));
@@ -52,6 +56,7 @@ class Game {
         this.canUnpause = false;
 
         this.gameOver = false;
+        this.gameWon = false;
         this.started = false;
 
         window.addEventListener("gamepadconnected", (e) => {
@@ -66,6 +71,7 @@ class Game {
         });
 
         // for (let i = 0; i < 3; i++) this.spawnEnemy();
+        this.initSprites();
         this.initialTime = Date.now();
     }
 
@@ -74,15 +80,29 @@ class Game {
         delete this.grid;
         delete this.maze;
         delete this.zombies;
+        delete this.greenKey;
+        delete this.blueKey;
+        delete this.redKey;
         this.player = new Player(this.rm.get('player_standing'), this.cellSize, this.ih);
         this.grid = new Grid(this.cellCount, this.width, this.height, this.cellSize);
         this.maze = new Maze(this.cellCount, this.cellSize, this.width, this.height, this.grid);
         this.zombies = {};
+        this.initKeys();
 
         this.gameOver = false;
+        this.gameWon = false;
         this.paused = false;
         this.canUnpause = false;
         this.initialTime = Date.now();
+    }
+
+    initSprites() {
+        this.initPlayer();
+        // this.blueKeySprite = this.rm.get('blueK');
+        // this.greenKeySprite = this.rm.get('greenK');
+        // this.redKeySprite = this.rm.get('redK');
+        this.initFlags();
+        this.initKeys();
     }
 
     initPlayer() {
@@ -90,6 +110,47 @@ class Game {
         Bullet.sprite = this.player.bulletSprite = this.rm.get('bullet');
         // Object.values(this.player.bullets).forEach(bullet => bullet.sprite = this.player.bulletSprite);
         // debugger
+    }
+
+    initFlags() {
+        this.startFlag = new Flag(this.rm.get('start_flag'), this.cellSize);
+        this.endFlag = new Flag(this.rm.get('end_flag'), this.cellSize);
+        this.endFlag.sprite.size = this.startFlag.sprite.size = {
+            w: this.cellSize.w / 4,
+            h: this.cellSize.w / 4
+        };
+        this.startFlag.position.x = 0;
+        this.startFlag.position.y = 0;
+        this.endFlag.position.x = this.cellCount * this.cellSize.w - this.endFlag.sprite.size.w;
+        this.endFlag.position.y = this.cellCount * this.cellSize.h - this.endFlag.sprite.size.h;
+    }
+
+    initKeys() {
+        this.blueKey = new Key(this.rm.get('blueK'), this.cellSize, 'blue');
+        this.redKey = new Key(this.rm.get('redK'), this.cellSize, 'red');
+        this.greenKey = new Key(this.rm.get('greenK'), this.cellSize, 'green');
+        this.keys = [this.blueKey, this.redKey, this.greenKey];
+
+        const indices = [];
+        while (indices.length < 3) {
+            const i = Math.floor(Math.random() * this.grid.cells.length);
+            if (!indices.includes(i)) indices.push(i);
+            else continue;
+        }
+
+        this.keys.forEach((key, idx) => {
+            const cell = this.grid.cells[indices.pop()];
+            key.position.x = cell.col * this.cellSize.w;
+            key.position.y = cell.row * this.cellSize.h;
+            // console.log('key:', idx, '=', `row: ${cell.row} col: ${cell.col}`);
+            key.sprite.size = {
+                w: this.cellSize.w / 4,
+                h: this.cellSize.h / 6
+            };
+        });
+
+        // console.log('keys initialized');
+        // console.log(this.keys);
     }
 
     spawnEnemy() {
@@ -234,7 +295,7 @@ class Game {
         // handle shooting bullets
         if (this.gamepad.axes[4] > 0.7) {
             // console.log('Right Trigger Pressed');
-            // this.player.shoot(this.mousePos);
+            this.player.shoot(this.mousePos);
         }
 
         // handle velocity
@@ -265,6 +326,76 @@ class Game {
     //         else this.paused = true;
     //     }
     // }
+
+    checkKeyCollision(key) {
+        // const l1 = collider.getLeft() + collider.size / 4;
+        const l1 = this.player.position.x;
+        // const t1 = collider.getTop() + collider.size / 6;
+        const t1 = this.player.position.y;
+        // const r1 = collider.getRight() - collider.size / 4;
+        const r1 = this.player.position.x + this.player.sprite.width;
+        // const b1 = collider.getBottom() - collider.size / 8;
+        const b1 = this.player.position.y + this.player.sprite.height;
+
+        // const l2 = collidee.col * 48;
+        // const t2 = collidee.row * 48;
+        // const r2 = collidee.col * 48 + 48;
+        // const b2 = collidee.row * 48 + 48;
+
+        const l2 = key.position.x + this.cellSize.w / 2;
+        const t2 = key.position.y + this.cellSize.h / 2;
+        const r2 = key.position.x + this.cellSize.w / 2 + key.sprite.size.w;
+        const b2 = key.position.y + this.cellSize.h / 2 + key.sprite.size.h;
+
+        if (b1 < t2 || t1 > b2 || r1 < l2 || l1 > r2) {
+            return false;
+        }
+
+        this.player.pickUpKey(key);
+        let found;
+        for (let i = 0; i < this.keys.length; i++) {
+            if (this.keys[i] === key) {
+                found = i;
+                break;
+            }
+        }
+        this.keys.splice(found, 1);
+        return true;
+    }
+
+    isWinner() {
+        // const cell = this.grid.cells[this.grid.cells.length - 1];
+
+        // const l1 = collider.getLeft() + collider.size / 4;
+        const l1 = this.player.position.x;
+        // const t1 = collider.getTop() + collider.size / 6;
+        const t1 = this.player.position.y;
+        // const r1 = collider.getRight() - collider.size / 4;
+        const r1 = this.player.position.x + this.player.sprite.width;
+        // const b1 = collider.getBottom() - collider.size / 8;
+        const b1 = this.player.position.y + this.player.sprite.height;
+
+        const l2 = this.endFlag.position.x;
+        const t2 = this.endFlag.position.y;
+        const r2 = this.endFlag.position.x + this.endFlag.sprite.size.w;
+        const b2 = this.endFlag.position.y + this.endFlag.sprite.size.h;
+        // const l2 = cell.col * cell.size.w;
+        // const t2 = cell.row * cell.size.h;
+        // const r2 = cell.col * cell.size.w + cell.size.w;
+        // const b2 = cell.row * cell.size.h + cell.size.h;
+
+        if (b1 < t2 || t1 > b2 || r1 < l2 || l1 > r2) {
+            return false;
+        }
+        // this.paused = true;
+        // this.visible = true;
+        // this.type = "congratulations";
+        if (Object.keys(this.player.keys).every(key => this.player.keys[key])) {
+            this.totalTime = (Date.now() - this.player.time) / 1000.0;
+            this.gameWon = true;
+        }
+        return true;
+    }
 
     update(dt) {
         // check if game over
@@ -302,12 +433,16 @@ class Game {
             // TODO create zombie hit function that decreases hp
             zombie.attack(this.player);
             if (zombie.dead()) {
+                this.player.kills++;
                 delete this.zombies[zombie.id];
             } else {
                 Object.keys(this.player.bullets).forEach(id => {
                     // bullets[id].update(dt);
                     if (this.player.bullets[id].hit(zombie)) {
-                        if (zombie.dead()) delete this.zombies[zombie.id];
+                        if (zombie.dead()) {
+                            this.player.kills++;
+                            delete this.zombies[zombie.id];
+                        }
                         delete this.player.bullets[id];
                     }
                     // const bullet = this.player.bullets[id];
@@ -323,8 +458,16 @@ class Game {
                 collided.forEach(collision => this.collisionDetector.resolveCollision(collision, zombie));
             }
         });
-        // this.enemy2.update();
 
+        if (this.keys && !this.paused) {
+            this.keys.forEach(key => {
+                // console.log(key.sprite.src);
+                // debugger
+                this.checkKeyCollision(key);
+            });
+        }
+        // this.enemy2.update();
+        this.isWinner();
 
         this.viewport.update(this.player.position.x, this.player.position.y);
     }
@@ -336,6 +479,18 @@ class Game {
         // this.maze.render(this.ctx);
 
         this.viewport.render(this.ctx, this.grid.cells);
+
+        if (this.keys && this.started) {
+            this.keys.forEach(key => {
+                // console.log(key.sprite.src);
+                // debugger
+                key.render(this.ctx, this.viewport.offset);
+            });
+            // this.blueKey.render(this.ctx, this.viewport.offset);
+            // this.greenKey.render(this.ctx, this.viewport.offset);
+            // this.redKey.render(this.ctx, this.viewport.offset);
+        }
+        // if (this.keys) console.log(this.keys);
         // this.solver.render(this.ctx);
         // this.enemy.render(this.ctx);
         // this.enemy2.render(this.ctx);
@@ -346,7 +501,15 @@ class Game {
             zombie.render(this.ctx, this.viewport.offset);
         });
 
-        if (this.started) this.player.renderUI(this.ctx);
+        if (this.started) {
+            if (!this.paused) {
+                this.startFlag.render(this.ctx, this.viewport.offset);
+                this.endFlag.render(this.ctx, this.viewport.offset);
+            }
+            this.player.renderUI(this.ctx);
+        }
+
+
 
         // debug info mouse pos rotation angle
         this.ctx.fillStyle = "#fff";

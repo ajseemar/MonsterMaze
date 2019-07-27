@@ -28,12 +28,16 @@ const assets = {
     'start_flag': 'assets/images/start_flag.png',
     'zombie': 'assets/images/zombie.png',
     'zombie_hit': 'assets/images/zombie_hit.png',
+    'blueK': 'assets/images/key_blue.png',
+    'redK': 'assets/images/key_red.png',
+    'greenK': 'assets/images/key_green.png',
+    'grayK': 'assets/images/key_gray.png'
 };
 
 var rm = new ResourceManager();
 var game, menu;
 const initGame = () => {
-    game = new Game(20, rm);
+    game = new Game(5, rm);
     menu = new Menu(game);
 };
 

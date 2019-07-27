@@ -41,6 +41,26 @@ class Menu {
         ctx.fillText(`Press SPACE to Resume Game`, this.game.width / 2, this.game.height / 2 + 40);
     }
 
+    renderWinner(ctx) {
+        ctx.fillStyle = "#0ff";
+        ctx.font = '120px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`You Survived...`, this.game.width / 2, this.game.height / 2);
+        // ctx.fillText(`PAUSED${this.paused[this.pauseCounter]}`, this.game.width / 2, this.game.height / 2);
+
+        ctx.textAlign = 'left';
+        ctx.font = '40px Arial';
+        ctx.fillText(`Time: ${this.game.totalTime}s`, this.game.width / 4 + 100, this.game.height / 2 + 40);
+
+        ctx.textAlign = 'left';
+        ctx.font = '40px Arial';
+        ctx.fillText(`Kills: ${this.game.player.kills}`, this.game.width / 2 + 200, this.game.height / 2 + 40);
+
+        ctx.textAlign = 'center';
+        ctx.font = '20px Arial';
+        ctx.fillText(`Press ENTER to Start Next Round`, this.game.width / 2, this.game.height / 2 + 100);
+    }
+
     renderGameOver(ctx) {
         ctx.fillStyle = "#f00";
         ctx.font = '120px Arial';
@@ -98,6 +118,11 @@ class Menu {
             this.game.paused = true;
             this.visible = true;
             this.type = "game_over"
+        } else if (this.game.gameWon) {
+            this.game.paused = true;
+            this.visible = true;
+            this.game.gameOver = true;
+            this.type = "congratulations";
         } else {
             // this.game.handleInput();
             if (!this.game.paused) {
@@ -113,6 +138,9 @@ class Menu {
                 break;
             case "pause":
                 this.renderPause(this.game.ctx);
+                break;
+            case "congratulations":
+                this.renderWinner(this.game.ctx);
                 break;
             case "game_over":
                 this.renderGameOver(this.game.ctx);
