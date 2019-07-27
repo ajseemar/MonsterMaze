@@ -6,6 +6,10 @@ class Key extends Sprite {
         this.keyColor = color;
     }
 
+    static render(ctx) {
+        ctx.drawImage(Key.default.sprite, 0, 0);
+    }
+
     render(ctx, offset) {
         ctx.save();
         // ctx.translate(this.position.x + offset.x, this.position.y + offset.y);

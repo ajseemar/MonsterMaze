@@ -258,6 +258,15 @@ class Player extends Sprite {
         // ctx.closePath();
         ctx.fill()
         ctx.restore();
+
+        // render keys
+        Object.keys(this.keys).forEach(key => {
+            if (this.keys[key]) {
+                key.render(ctx);
+            } else {
+                Key.render(ctx);
+            }
+        });
     }
 
     render(ctx, offset) {

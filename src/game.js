@@ -11,6 +11,7 @@ const CollisionDetector = require('./physics/collision');
 const KEYS = require('./utils/keys');
 const Key = require('./entities/pickups/key');
 const Flag = require('./entities/pickups/flag');
+const UIManager = require('./utils/ui');
 
 // GAME CONSTANTS
 const MAX_ENEMIES = 15;
@@ -72,6 +73,7 @@ class Game {
 
         // for (let i = 0; i < 3; i++) this.spawnEnemy();
         this.initSprites();
+        this.ui = new UIManager(this.player);
         this.initialTime = Date.now();
     }
 
@@ -148,6 +150,8 @@ class Game {
                 h: this.cellSize.h / 6
             };
         });
+
+        Key.default = new Key(this.rm.get('grayK'), this.cellSize, 'default');
 
         // console.log('keys initialized');
         // console.log(this.keys);
@@ -506,8 +510,8 @@ class Game {
                 this.startFlag.render(this.ctx, this.viewport.offset);
                 this.endFlag.render(this.ctx, this.viewport.offset);
             }
-            this.player.renderUI(this.ctx);
         }
+        this.ui.render(this.ctx);
 
 
 
