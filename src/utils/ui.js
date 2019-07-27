@@ -1,9 +1,14 @@
+const Key = require('../entities/pickups/key');
+
 class UIManager {
-    constructor(player) {
+    constructor(player, width, height, cellSize) {
         this.player = player;
+        this.width = width;
+        this.height = height;
+        this.cellSize = cellSize;
     }
 
-    render(ctx) {
+    renderHealthBar(ctx) {
         // render health bar
         ctx.fillStyle = "#c7c7c7";
         ctx.fillRect(75, 40, 1000, 83);
@@ -24,7 +29,9 @@ class UIManager {
         ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
         const width = Math.floor(1000 * this.player.hp / this.player.hpMax);
         ctx.fillRect(75, 40, width, 83);
+    }
 
+    renderHealthBarHeart(ctx) {
         // render heart
         ctx.save();
         ctx.strokeStyle = "#fff";
@@ -43,15 +50,31 @@ class UIManager {
         ctx.stroke();
         ctx.fill()
         ctx.restore();
+    }
 
-        // render keys
-        Object.keys(this.player.keys).forEach(key => {
-            if (this.player.keys[key]) {
-                key.render(ctx);
+    renderKeys(ctx) {
+        Object.keys(this.player.keys).forEach((keyCode, idx) => {
+            const key = this.player.keys[keyCode];
+            if (key) {
+                // key.render(ctx);
+                ctx.drawImage(key.sprite, 0, 0, key.sprite.width, key.sprite.height, 20, (idx * this.cellSize.h / 4 + 8 * idx) + 130, this.cellSize.w / 2, this.cellSize.h / 4);
             } else {
-                Key.render(ctx);
+                // Key.render(ctx);
+                ctx.drawImage(Key.default.sprite, 0, 0, Key.default.sprite.width, Key.default.sprite.height, 20, (idx * this.cellSize.h / 4 + 8 * idx) + 130, this.cellSize.w / 2, this.cellSize.h / 4);
+                // ctx.drawImage(Key.default.sprite, 0, idx * Key.default.sprite.height + 150);
             }
         });
+    }
+
+    render(ctx) {
+
+        this.renderHealthBar(ctx);
+        this.renderHealthBarHeart(ctx);
+        this.renderKeys(ctx);
+
+
+        // render keys
+
     }
 }
 

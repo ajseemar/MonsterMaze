@@ -14,7 +14,7 @@ const Flag = require('./entities/pickups/flag');
 const UIManager = require('./utils/ui');
 
 // GAME CONSTANTS
-const MAX_ENEMIES = 15;
+const MAX_ENEMIES = 20;
 
 class Game {
     constructor(size, rm) {
@@ -73,7 +73,7 @@ class Game {
 
         // for (let i = 0; i < 3; i++) this.spawnEnemy();
         this.initSprites();
-        this.ui = new UIManager(this.player);
+        this.ui = new UIManager(this.player, this.canvas.width, this.canvas.height, this.cellSize);
         this.initialTime = Date.now();
     }
 
@@ -136,7 +136,7 @@ class Game {
         const indices = [];
         while (indices.length < 3) {
             const i = Math.floor(Math.random() * this.grid.cells.length);
-            if (!indices.includes(i)) indices.push(i);
+            if (!indices.includes(i) && i !== 0) indices.push(i);
             else continue;
         }
 
@@ -217,6 +217,12 @@ class Game {
         // if (this.player) this.player.sprite.resize(this.cellSize);
         if (this.zombies && Object.keys(this.zombies).length > 0) {
             Object.values(this.zombies).forEach(zombie => zombie.resize(this.cellSize));
+        }
+
+        if (this.ui) {
+            this.ui.width = this.canvas.width;
+            this.ui.height = this.canvas.height;
+            this.ui.cellSize = this.cellSize;
         }
         // if (this.enemy) this.enemy.resize(this.cellSize);
         // if (this.enemy2) this.enemy2.resize(this.cellSize);
@@ -510,8 +516,8 @@ class Game {
                 this.startFlag.render(this.ctx, this.viewport.offset);
                 this.endFlag.render(this.ctx, this.viewport.offset);
             }
-            // this.ui.render(this.ctx);
-            this.player.renderUI(this.ctx);
+            // this.player.renderUI(this.ctx);
+            if (!this.gameOver) this.ui.render(this.ctx);
         }
 
 
